@@ -326,7 +326,8 @@ const modelsData = {
       { id:'M3CP', file:'M3Blot2cp.pdb', label:'M3 · Con plantilla', metrics:{ pLDDT:{val:'87.5'}, pTM:{val:'0.777'}, 'Z-score':{val:'-4.24'}, 'MolProbity':{val:'1.66',good:true}, 'Clash Score':{val:'2.81',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'2'}, 'Rotamer Out.':{val:'1'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.37'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-457.19'} }},
       { id:'M4CP', file:'M4Blot2cp.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'87.2'}, pTM:{val:'0.775'}, 'Z-score':{val:'-4.45'}, 'MolProbity':{val:'1.84'}, 'Clash Score':{val:'1.87',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.83'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-472.43'} }},
       { id:'M5CP', file:'M5Blot2cp.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'86.8'}, pTM:{val:'0.774'}, 'Z-score':{val:'-4.59'}, 'MolProbity':{val:'1.71',good:true}, 'Clash Score':{val:'2.34',good:true}, 'Ramachandran Fav.':{val:'90.71%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.49'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-476.95',good:true} }},
-    ]
+    ],
+    docking: { id:'Docking', file:'Blot2_IgE_docking.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   },
   bp2: {
     name: 'BP-2',
@@ -345,7 +346,8 @@ const modelsData = {
       { id:'M3CP', file:'M3BP-2CP.pdb', label:'M3 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'84.6'}, pTM:{val:'0.616'}, 'Z-score':{val:'-6.10',good:true}, 'MolProbity':{val:'1.78',good:true}, 'Clash Score':{val:'12.84'}, 'Ramachandran Fav.':{val:'95.83%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'51'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.68',good:true}, 'EvoEF2 (kcal/mol)':{val:'-947.63',good:true} }},
       { id:'M4CP', file:'M4BP-2CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'84.3'}, pTM:{val:'0.612'}, 'Z-score':{val:'-3.45'}, 'MolProbity':{val:'1.93',good:true}, 'Clash Score':{val:'13.82'}, 'Ramachandran Fav.':{val:'95.04%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'60'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-728.71'} }},
       { id:'M5CP', file:'M5BP-2CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'84.9'}, pTM:{val:'0.628'}, 'Z-score':{val:'-4.10'}, 'MolProbity':{val:'2.10'}, 'Clash Score':{val:'16.58'}, 'Ramachandran Fav.':{val:'95.67%',good:true}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'4'}, 'Bad Bonds':{val:'61'}, 'QMEAN':{val:'1.31'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-851.31'} }},
-    ]
+    ],
+    docking: { id:'Docking', file:'BP2_IgE_docking.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   },
   pf14c: {
     name: 'PF14c',
@@ -364,7 +366,8 @@ const modelsData = {
       { id:'M3CP', file:'M3PF14cCP.pdb', label:'M3 · Con plantilla', metrics:{ pLDDT:{val:'75.8'}, pTM:{val:'0.438'}, 'Z-score':{val:'-0.88'}, 'MolProbity':{val:'1.92',good:true}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'88.67%',good:true}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'8'}, 'C-Beta Dev.':{val:'1'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.90'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-541.04',good:true} }},
       { id:'M4CP', file:'M4PF14cCP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'75.2'}, pTM:{val:'0.436'}, 'Z-score':{val:'-0.48'}, 'MolProbity':{val:'2.09'}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'85.33%'}, 'Ram. Outliers':{val:'12'}, 'Rotamer Out.':{val:'11'}, 'C-Beta Dev.':{val:'3'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-2.37'}, 'QMEANDisCo':{val:'0.63'}, 'EvoEF2 (kcal/mol)':{val:'-494.60'} }},
       { id:'M5CP', file:'M5PF14cCP.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.53'}, 'MolProbity':{val:'1.75',good:true}, 'Clash Score':{val:'0.0',good:true}, 'Ramachandran Fav.':{val:'84.67%'}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'5',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.64'}, 'QMEANDisCo':{val:'0.57'}, 'EvoEF2 (kcal/mol)':{val:'-491.53'} }},
-    ]
+    ],
+    docking: { id:'Docking', file:'PF14c_IgE_docking.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   }
 };
 
@@ -384,13 +387,16 @@ function loadProtein(protKey) {
 function renderModelTabs(protKey) {
   const data = modelsData[protKey];
   const container = document.getElementById('model-tabs');
-  let html = `<button class="model-tab ${data.postMD ? 'model-tab' : ''}" onclick="selectModel('postMD','${data.postMD.file}','${data.postMD.label}','postMD')">Post-MD</button>`;
+  let html = `<button class="model-tab" onclick="selectModel('postMD','${data.postMD.file}','${data.postMD.label}','postMD')">Post-MD</button>`;
   data.SP.forEach(m => {
     html += `<button class="model-tab ${m.selected ? 'selected-model' : ''}" id="tab-${m.id}" onclick="selectModel('${m.id}','${m.file}','${m.label}','SP')">${m.id}</button>`;
   });
   data.CP.forEach(m => {
     html += `<button class="model-tab ${m.selected ? 'selected-model' : ''}" id="tab-${m.id}" onclick="selectModel('${m.id}','${m.file}','${m.label}','CP')">${m.id}</button>`;
   });
+  if (data.docking) {
+    html += `<button class="model-tab" id="tab-Docking" style="background:var(--purple-light);border-color:var(--purple);color:var(--purple);" onclick="selectDocking('${protKey}')">🔗 Docking IgE</button>`;
+  }
   container.innerHTML = html;
 }
 
@@ -434,6 +440,47 @@ function selectModel(modelId, filename, label, group) {
     });
 }
 
+function selectDocking(protKey) {
+  const d = modelsData[protKey].docking;
+  document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.getElementById('tab-Docking');
+  if (tab) tab.classList.add('active');
+
+  // Show images in metrics panel
+  const panel = document.getElementById('metrics-panel');
+  let imgHtml = d.images.map(img => `
+    <div style="margin-bottom:10px;">
+      <img src="${BASE_URL+img}" alt="${img}" style="width:100%;border-radius:8px;border:1px solid var(--border-light);" onerror="this.style.display='none'">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--text-faint);margin-top:4px;text-align:center">${img.replace('.png','').replace('.jpg','')}</div>
+    </div>`).join('');
+  let metricRows = Object.entries(d.metrics).map(([k,v]) =>
+    `<div class="metric-row"><span class="metric-key">${k}</span><span class="metric-val ${v.good?'good':''}">${v.val}</span></div>`
+  ).join('');
+  panel.innerHTML = `<h4>${d.label}</h4><div class="model-name" style="margin-bottom:12px;">Interacción con IgE humana (PDB: 7MLH)</div>${metricRows}<div style="margin-top:14px;font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-bottom:8px;">VISTAS DEL COMPLEJO</div>${imgHtml}`;
+
+  // Load docking PDB in viewer
+  const placeholder = document.getElementById('viewer-placeholder');
+  placeholder.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span style="font-size:12px;font-family:var(--mono)">Cargando complejo...</span>`;
+  placeholder.style.display = 'flex';
+  const viewerEl = document.getElementById('mol-viewer');
+  if (!viewer3d) viewer3d = $3Dmol.createViewer(viewerEl, {backgroundColor:'#FDFCF8'});
+  viewer3d.clear();
+  fetch(BASE_URL + d.file)
+    .then(r => { if (!r.ok) throw new Error('No encontrado'); return r.text(); })
+    .then(pdbData => {
+      placeholder.style.display = 'none';
+      viewer3d.addModel(pdbData, 'pdb');
+      // Color by chain: A=cyan (IgE), B=pink (proteína)
+      viewer3d.setStyle({chain:'A'}, {cartoon:{color:'#5BA4CF'}});
+      viewer3d.setStyle({chain:'B'}, {cartoon:{color:'#E8A0BF'}});
+      viewer3d.zoomTo();
+      viewer3d.render();
+    })
+    .catch(() => {
+      placeholder.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span style="font-family:var(--mono);font-size:11px">Archivo no encontrado.<br>Sube ${d.file} al repositorio.</span>`;
+    });
+}
+
 function renderMetrics(label, metrics, isPostMD) {
   const panel = document.getElementById('metrics-panel');
   const badge = isPostMD ? '<span class="badge-best">post-MD</span>' : '';
@@ -449,8 +496,14 @@ function showMetricsEmpty() {
 
 function setStyle(style) {
   if (!viewer3d) return;
-  const styles = {cartoon:{cartoon:{color:'spectrum'}},surface:{surface:{opacity:0.8,colorscheme:'greenCarbon'}},stick:{stick:{}},sphere:{sphere:{}}};
-  viewer3d.setStyle({}, styles[style] || styles.cartoon);
+  viewer3d.removeAllSurfaces();
+  if (style === 'surface') {
+    viewer3d.setStyle({}, {cartoon:{color:'spectrum'}});
+    viewer3d.addSurface($3Dmol.SurfaceType.VDW, {opacity:0.7, colorscheme:'whiteCarbon'});
+  } else {
+    const styles = {cartoon:{cartoon:{color:'spectrum'}},stick:{stick:{}},sphere:{sphere:{}}};
+    viewer3d.setStyle({}, styles[style] || styles.cartoon);
+  }
   viewer3d.render();
 }
 
@@ -563,6 +616,19 @@ const filesData = [
   {name:'M3PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M3',ext:'pdb',size:'~2.8 MB'},
   {name:'M4PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M4',ext:'pdb',size:'~2.8 MB'},
   {name:'M5PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M5 ★★',ext:'pdb',size:'~2.8 MB'},
+  // Docking IgE
+  {name:'Blot2_IgE_docking.pdb',protein:'Blo t 2',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
+  {name:'Blot2docking.png',protein:'Blo t 2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
+  {name:'Blot2dockingback.png',protein:'Blo t 2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
+  {name:'Blot2dockingside.png',protein:'Blo t 2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  {name:'BP2_IgE_docking.pdb',protein:'BP-2',type:'Complejo IgE · Docking',ext:'pdb',size:'~6 MB'},
+  {name:'BP2docking.png',protein:'BP-2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
+  {name:'BP2dockingback.png',protein:'BP-2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
+  {name:'BP2dockingside.png',protein:'BP-2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  {name:'PF14c_IgE_docking.pdb',protein:'PF14c',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
+  {name:'PF14cdocking.png',protein:'PF14c',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
+  {name:'PF14cdockingback.png',protein:'PF14c',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
+  {name:'PF14cdockingside.png',protein:'PF14c',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
 ];
 
 function renderFiles() {
