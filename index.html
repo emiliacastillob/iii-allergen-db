@@ -1102,11 +1102,6 @@ const epitopesData = [
 ];
 
 // ── FILES PDB ──
-const pdbfiles = {
-  'Blo-t-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/Blot2DD.pdb',
-  'bp-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/BP2DD.pdb',
-  'pf14c': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/pf14cDD.pdb',
-},
   { name: 'blo_t_2_trajectory.nc', protein: 'Blo t 2', type: 'Trayectoria MD', ext: 'nc', size: '~4 GB' },
   { name: 'blo_t_2_epitopes_B.csv', protein: 'Blo t 2', type: 'Epítopes B', ext: 'csv', size: '~8 KB' },
   { name: 'blo_t_2_epitopes_T.csv', protein: 'Blo t 2', type: 'Epítopes T', ext: 'csv', size: '~6 KB' },
@@ -1176,9 +1171,9 @@ let currentProt = null;
 // IMPORTANTE: Actualiza estas URLs con las rutas reales de tus archivos en GitHub
 // Ejemplo: 'https://raw.githubusercontent.com/TU-USUARIO/iii-allergen-db/main/proteins/blo-t-2/post_MD.pdb'
 const pdbFiles = {
-  'blo-t-2': null,
-  'bp-2': null,
-  'pf14c': null,
+  'blo-t-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/Blot2DD.pdb',
+  'bp-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/BP2DD.pdb',
+  'pf14c': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/pf14cDD.pdb',
 };
 
 function selectProtein(name) {
