@@ -433,7 +433,7 @@ const modelsData = {
   blot5: {
     name: 'Blo t 5',
     selectedModel: 'M3CP',
-    postMD: { file: 'BLOT5DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'Modelo seleccionado':{val:'M3CP',good:true}, 'Método':{val:'Control positivo'}, 'Estructura exp.':{val:'2MEY / 2JMH (NMR)',good:true} }},
+    postMD: { file: 'BLOT5DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'Z-score (ProSA)':{val:'-5.1',good:true}, 'MolProbity Score':{val:'1.07',good:true}, 'Clash Score':{val:'0.47',good:true}, 'Ramachandran Fav.':{val:'96.58%',good:true}, 'Ram. Outliers':{val:'0',good:true}, 'Rotamer Outliers':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'16/1110',good:true}, 'Estructura exp.':{val:'2MEY / 2JMH (NMR)',good:true} }},
     SP: [
       { id:'M1SP', file:'M1Bt5SP.pdb', label:'M1 · Sin plantilla ★ SELECCIONADO SP', selected:true, metrics:{ pLDDT:{val:'84.4',good:true}, pTM:{val:'0.729',good:true}, 'Z-score':{val:'-4.19',good:true}, 'MolProbity':{val:'1.48',good:true}, 'Clash Score':{val:'9.03'}, 'Ramachandran Fav.':{val:'100%',good:true}, 'Ram. Outliers':{val:'0',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'38/1110'}, 'QMEANDisCo':{val:'0.67',good:true}, 'QMEAN':{val:'0.33'}, 'EvoEF2 (kcal/mol)':{val:'-667.16',good:true} }},
       { id:'M2SP', file:'M2Bt5SP.pdb', label:'M2 · Sin plantilla', metrics:{ pLDDT:{val:'71.3'}, pTM:{val:'0.636'}, 'Z-score':{val:'-4.66',good:true}, 'MolProbity':{val:'2.21'}, 'Clash Score':{val:'18.54',good:false}, 'Ramachandran Fav.':{val:'93.18%'}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'40/1110'}, 'QMEANDisCo':{val:'0.63'}, 'QMEAN':{val:'-0.06'}, 'EvoEF2 (kcal/mol)':{val:'-483.13'} }},
@@ -643,6 +643,26 @@ const epitopesData = [
   { protein: 'PF14c', type: 'T CD4+', sequence: 'EERLKIATAKLEEAS', region: '-', hla: 'DQB1*04:02', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
   { protein: 'PF14c', type: 'T CD4+', sequence: 'RLKIATAKLEEASQS', region: '-', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
   { protein: 'PF14c', type: 'T CD4+', sequence: 'LSTFEGDNKFIHTEP', region: '-', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
+  // Blo t 5 — Control metodologico
+  // B Lineales top 50%
+  {protein:'Blo t 5',type:'Lineal',sequence:'QEHKPKKDDFRNEFDHLLIEQ',region:'18-38',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 19-33, 25-40, 26-41, 34-49'},
+  {protein:'Blo t 5',type:'Lineal',sequence:'EHQLLYLQHQLDELNENKSKEL',region:'47-68',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 42-57, 46-61'},
+  {protein:'Blo t 5',type:'Lineal',sequence:'EKIIRELDV',region:'70-78',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 70-84'},
+  {protein:'Blo t 5',type:'Lineal',sequence:'AMIEG',region:'81-85',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 76-92'},
+  {protein:'Blo t 5',type:'Lineal',sequence:'GALERELKRTDLNILERFN',region:'88-106',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 86-101, 90-105, 97-112, 98-113'},
+  {protein:'Blo t 5',type:'Lineal',sequence:'KILLKDLKETEQKVKDIQTQ',region:'115-134',hla:'-',tool:'BepiPred 3.0 (top 50%)',reported:'Coincide exp. 108-123, 119-134'},
+  // B Conformacionales
+  {protein:'Blo t 5',type:'Conformacional',sequence:'D25, R28, N29, F31, L35, E44, I101, F105',region:'Epitope conformacional 1',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'Moderada — score 0.90'},
+  {protein:'Blo t 5',type:'Conformacional',sequence:'D77, E84, R92, K95, R96, D98',region:'Epitope conformacional 2',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'Moderada — score 0.90'},
+  {protein:'Blo t 5',type:'Conformacional',sequence:'K115, K119',region:'Epitope conformacional 3',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'Alta confianza — N29 (score 1.50)'},
+  // T CD4+
+  {protein:'Blo t 5',type:'T CD4+',sequence:'KDDRFNEFDHLLIEO',region:'pos. 24',hla:'DQB1*02:01 (SB, Rank 0.52)',tool:'NetMHCIIpan 4.0',reported:'Reportado exp. — DRB1*04:07 (WB) / DQB1*04:02 (WB)'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'SKILLKDLKETEQKV',region:'pos. 114',hla:'DRB1*03:01 (SB, Rank 0.48)',tool:'NetMHCIIpan 4.0',reported:'Reportado experimentalmente'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'ILERFNYEEAQTLSK',region:'pos. 101',hla:'DQB1*02:01 (WB, Rank 1.84)',tool:'NetMHCIIpan 4.0',reported:'Reportado exp. — DQB1*04:02 (WB)'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'FDHLLIEQANHAIEK',region:'pos. 31',hla:'DRB1*04:07 (WB, Rank 2.27)',tool:'NetMHCIIpan 4.0',reported:'Reportado experimentalmente'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'AASVLAQEHKPKKDD',region:'pos. 12',hla:'DRB1*03:01 (WB, Rank 3.43)',tool:'NetMHCIIpan 4.0',reported:'No reportado previamente'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'RTDLNLERFNYEEA',region:'pos. 96',hla:'DRB1*03:01 (WB, Rank 3.97)',tool:'NetMHCIIpan 4.0',reported:'No reportado previamente'},
+  {protein:'Blo t 5',type:'T CD4+',sequence:'ELDVVCAMIEGAQGA',region:'pos. 75',hla:'DQB1*03:01 (WB, Rank 4.78)',tool:'NetMHCIIpan 4.0',reported:'No reportado previamente'},
 ];
 
 function filterEp(filter, btn) {
