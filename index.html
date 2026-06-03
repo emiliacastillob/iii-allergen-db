@@ -1101,11 +1101,12 @@ const epitopesData = [
   { protein: 'PF14c', type: 'T CD4+', sequence: 'LSTFEGDNKFIHTEP', region: '-', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
 ];
 
-// ── FILES DATA ──
-const filesData = [
-  { name: 'blo_t_2_sequence.fasta', protein: 'Blo t 2', type: 'Secuencia', ext: 'fasta', size: '~1 KB' },
-  { name: 'blo_t_2_pre_MD.pdb', protein: 'Blo t 2', type: 'Estructura pre-MD', ext: 'pdb', size: '~2.1 MB' },
-  { name: 'blo_t_2_post_MD.pdb', protein: 'Blo t 2', type: 'Estructura post-MD', ext: 'pdb', size: '~2.1 MB' },
+// ── FILES PDB ──
+const pdbfiles = {
+  'blo-t-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/blo t 2 dd.pdb',
+  'bp-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/BP-2 DD.pdb',
+  'pf14c': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/pf14cDD.pdb',
+},
   { name: 'blo_t_2_trajectory.nc', protein: 'Blo t 2', type: 'Trayectoria MD', ext: 'nc', size: '~4 GB' },
   { name: 'blo_t_2_epitopes_B.csv', protein: 'Blo t 2', type: 'Epítopes B', ext: 'csv', size: '~8 KB' },
   { name: 'blo_t_2_epitopes_T.csv', protein: 'Blo t 2', type: 'Epítopes T', ext: 'csv', size: '~6 KB' },
