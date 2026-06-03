@@ -230,8 +230,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
       <p class="section-title">Colección de alérgenos</p>
       <p class="section-sub">Datos estructurales y antigénicos generados en la tesis de maestría en inmunología del Instituto de Investigaciones Inmunológicas de la Universidad de Cartagena titulado: "Análisis estructural y predicción de epítopes B y T de alérgenos recombinantes y proteínas híbridas derivadas de ácaros de polvo doméstico: un estudio in silico.</p>
       <div class="stats-row">
-        <div class="stat"><div class="stat-val">3</div><div class="stat-label">proteínas</div></div>
-        <div class="stat"><div class="stat-val">30</div><div class="stat-label">modelos 3D</div></div>
+        <div class="stat"><div class="stat-val">4</div><div class="stat-label">proteínas</div></div>
+        <div class="stat"><div class="stat-val">40</div><div class="stat-label">modelos 3D</div></div>
         <div class="stat"><div class="stat-val">34</div><div class="stat-label">epítopes B</div></div>
         <div class="stat"><div class="stat-val">20</div><div class="stat-label">epítopes T</div></div>
         <div class="stat"><div class="stat-val">500</div><div class="stat-label">ns MD</div></div>
@@ -253,6 +253,11 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
           <p>Proteína híbrida pentamérica de <em>B. tropicalis</em>. 152 aa. Modelo seleccionado: M5CP. Patente US 9,163,069 B2.</p>
           <span class="chip chip-purple">Proteína híbrida</span>
         </div>
+        <div class="protein-card" style="border-top:3px solid #8B6914;" onclick="nav('viewer',null);loadProtein('blot5')">
+          <h3>Blo t 5</h3>
+          <p>Alérgeno de <em>Blomia tropicalis</em>. 134 aa. Control positivo de la metodología. Estructura experimental: 2MEY / 2JMH (NMR). Modelo seleccionado: M3CP.</p>
+          <span class="chip" style="background:#FBF0E0;color:#7A4A0E;">Control metodológico</span>
+        </div>
       </div>
       <div class="about-box">
         <h3>Sobre esta base de datos</h3>
@@ -270,6 +275,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
           <option value="blot2">Blo t 2</option>
           <option value="bp2">BP-2</option>
           <option value="pf14c">PF14c</option>
+          <option value="blot5">Blo t 5 (control)</option>
         </select>
         <span style="font-size:12px;font-family:var(--mono);color:var(--text-faint);">Selecciona modelo:</span>
       </div>
@@ -311,6 +317,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
         <button class="filter-btn" onclick="filterEp('Blo t 2',this)">Blo t 2</button>
         <button class="filter-btn" onclick="filterEp('BP-2',this)">BP-2</button>
         <button class="filter-btn" onclick="filterEp('PF14c',this)">PF14c</button>
+        <button class="filter-btn" onclick="filterEp('Blo t 5',this)">Blo t 5 (control)</button>
         <button class="filter-btn" onclick="filterEp('Lineal',this)">B lineales</button>
         <button class="filter-btn" onclick="filterEp('Conformacional',this)">B conformacionales</button>
         <button class="filter-btn" onclick="filterEp('T CD4+',this)">T CD4+</button>
@@ -422,6 +429,26 @@ const modelsData = {
       { id:'M5CP', file:'M5PF14cCP.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.53'}, 'MolProbity':{val:'1.75',good:true}, 'Clash Score':{val:'0.0',good:true}, 'Ramachandran Fav.':{val:'84.67%'}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'5',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.64'}, 'QMEANDisCo':{val:'0.57'}, 'EvoEF2 (kcal/mol)':{val:'-491.53'} }},
     ],
     docking: { id:'Docking', file:'PF14c_IgE_docking1.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+  }
+  blot5: {
+    name: 'Blo t 5',
+    selectedModel: 'M3CP',
+    postMD: { file: 'BLOT5DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'Modelo seleccionado':{val:'M3CP',good:true}, 'Método':{val:'Control positivo'}, 'Estructura exp.':{val:'2MEY / 2JMH (NMR)',good:true} }},
+    SP: [
+      { id:'M1SP', file:'M1Bt5SP.pdb', label:'M1 · Sin plantilla ★ SELECCIONADO SP', selected:true, metrics:{ pLDDT:{val:'84.4',good:true}, pTM:{val:'0.729',good:true}, 'Z-score':{val:'-4.19',good:true}, 'MolProbity':{val:'1.48',good:true}, 'Clash Score':{val:'9.03'}, 'Ramachandran Fav.':{val:'100%',good:true}, 'Ram. Outliers':{val:'0',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'38/1110'}, 'QMEANDisCo':{val:'0.67',good:true}, 'QMEAN':{val:'0.33'}, 'EvoEF2 (kcal/mol)':{val:'-667.16',good:true} }},
+      { id:'M2SP', file:'M2Bt5SP.pdb', label:'M2 · Sin plantilla', metrics:{ pLDDT:{val:'71.3'}, pTM:{val:'0.636'}, 'Z-score':{val:'-4.66',good:true}, 'MolProbity':{val:'2.21'}, 'Clash Score':{val:'18.54',good:false}, 'Ramachandran Fav.':{val:'93.18%'}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'40/1110'}, 'QMEANDisCo':{val:'0.63'}, 'QMEAN':{val:'-0.06'}, 'EvoEF2 (kcal/mol)':{val:'-483.13'} }},
+      { id:'M3SP', file:'M3BT5SP.pdb', label:'M3 · Sin plantilla', metrics:{ pLDDT:{val:'68.2'}, pTM:{val:'0.611'}, 'Z-score':{val:'-4.08',good:true}, 'MolProbity':{val:'2.06'}, 'Clash Score':{val:'17.64'}, 'Ramachandran Fav.':{val:'95.45%'}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'52/1110'}, 'QMEANDisCo':{val:'0.64'}, 'QMEAN':{val:'-0.59'}, 'EvoEF2 (kcal/mol)':{val:'-442.98'} }},
+      { id:'M4SP', file:'M4Bt5SP.pdb', label:'M4 · Sin plantilla', metrics:{ pLDDT:{val:'67.2'}, pTM:{val:'0.485'}, 'Z-score':{val:'-4.69',good:true}, 'MolProbity':{val:'2.79',good:false}, 'Clash Score':{val:'22.58',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'8'}, 'Rotamer Out.':{val:'4'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'25/1110'}, 'QMEANDisCo':{val:'0.65'}, 'QMEAN':{val:'-1.30'}, 'EvoEF2 (kcal/mol)':{val:'-438.25'} }},
+      { id:'M5SP', file:'M5BT5SP.pdb', label:'M5 · Sin plantilla', metrics:{ pLDDT:{val:'57.8'}, pTM:{val:'0.407'}, 'Z-score':{val:'-4.33',good:true}, 'MolProbity':{val:'2.99',good:false}, 'Clash Score':{val:'18.94',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'9'}, 'Rotamer Out.':{val:'9',good:false}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'24/1110'}, 'QMEANDisCo':{val:'0.62'}, 'QMEAN':{val:'-2.17'}, 'EvoEF2 (kcal/mol)':{val:'-344.67'} }},
+    ],
+    CP: [
+      { id:'M1CP', file:'M1BT5CP.pdb', label:'M1 · Con plantilla', metrics:{ pLDDT:{val:'86.9',good:true}, pTM:{val:'0.731',good:true}, 'Z-score':{val:'-4.26',good:true}, 'MolProbity':{val:'1.85',good:true}, 'Clash Score':{val:'10.38'}, 'Ramachandran Fav.':{val:'95.45%'}, 'Ram. Outliers':{val:'5'}, 'Rotamer Out.':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'4/1110',good:true}, 'QMEANDisCo':{val:'0.67',good:true}, 'QMEAN':{val:'-1.47'}, 'EvoEF2 (kcal/mol)':{val:'-635.33'} }},
+      { id:'M2CP', file:'M2BT5CP.pdb', label:'M2 · Con plantilla', metrics:{ pLDDT:{val:'84.8',good:true}, pTM:{val:'0.708',good:true}, 'Z-score':{val:'-4.22',good:true}, 'MolProbity':{val:'1.87',good:true}, 'Clash Score':{val:'9.49'}, 'Ramachandran Fav.':{val:'94.70%'}, 'Ram. Outliers':{val:'5'}, 'Rotamer Out.':{val:'0',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'44/1110'}, 'QMEANDisCo':{val:'0.67',good:true}, 'QMEAN':{val:'-0.39'}, 'EvoEF2 (kcal/mol)':{val:'-616.12'} }},
+      { id:'M3CP', file:'M3BT5CP.pdb', label:'M3 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'84.3',good:true}, pTM:{val:'0.728',good:true}, 'Z-score':{val:'-4.26',good:true}, 'MolProbity':{val:'1.44',good:true}, 'Clash Score':{val:'8.13',good:true}, 'Ramachandran Fav.':{val:'100%',good:true}, 'Ram. Outliers':{val:'0',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'38/1110'}, 'QMEANDisCo':{val:'0.67',good:true}, 'QMEAN':{val:'0.32'}, 'EvoEF2 (kcal/mol)':{val:'-663.89',good:true} }},
+      { id:'M4CP', file:'M4BT5CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'66.7'}, pTM:{val:'0.479'}, 'Z-score':{val:'-4.68',good:true}, 'MolProbity':{val:'2.85',good:false}, 'Clash Score':{val:'21.68',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'8'}, 'Rotamer Out.':{val:'5'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'26/1110'}, 'QMEANDisCo':{val:'0.65'}, 'QMEAN':{val:'-1.39'}, 'EvoEF2 (kcal/mol)':{val:'-429.02'} }},
+      { id:'M5CP', file:'M5BT5CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'57.6'}, pTM:{val:'0.405'}, 'Z-score':{val:'-4.35',good:true}, 'MolProbity':{val:'3.08',good:false}, 'Clash Score':{val:'20.33',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'6'}, 'Rotamer Out.':{val:'11',good:false}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'23/1110'}, 'QMEANDisCo':{val:'0.62'}, 'QMEAN':{val:'-1.82'}, 'EvoEF2 (kcal/mol)':{val:'-383.70'} }},
+    ],
+    docking: { id:'Docking', file:'Blot5_IgE_docking1.pdb', label:'Complejo Blo t 5 · IgE', images:['Blot5docking.png','Blot5dockingback.png','Blot5dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   }
 };
 
@@ -686,6 +713,22 @@ const filesData = [
   {name:'PF14cdocking.png',protein:'PF14c',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'PF14cdockingback.png',protein:'PF14c',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'PF14cdockingside.png',protein:'PF14c',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  // Blo t 5 — Control
+  {name:'BLOT5DD.pdb',protein:'Blo t 5',type:'Post-dinámica',ext:'pdb',size:'~2.4 MB'},
+  {name:'M1Bt5SP.pdb',protein:'Blo t 5',type:'Sin plantilla M1 ★',ext:'pdb',size:'~2.4 MB'},
+  {name:'M2Bt5SP.pdb',protein:'Blo t 5',type:'Sin plantilla M2',ext:'pdb',size:'~2.4 MB'},
+  {name:'M3BT5SP.pdb',protein:'Blo t 5',type:'Sin plantilla M3',ext:'pdb',size:'~2.4 MB'},
+  {name:'M4Bt5SP.pdb',protein:'Blo t 5',type:'Sin plantilla M4',ext:'pdb',size:'~2.4 MB'},
+  {name:'M5BT5SP.pdb',protein:'Blo t 5',type:'Sin plantilla M5',ext:'pdb',size:'~2.4 MB'},
+  {name:'M1BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M1',ext:'pdb',size:'~2.4 MB'},
+  {name:'M2BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M2',ext:'pdb',size:'~2.4 MB'},
+  {name:'M3BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M3 ★★',ext:'pdb',size:'~2.4 MB'},
+  {name:'M4BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M4',ext:'pdb',size:'~2.4 MB'},
+  {name:'M5BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M5',ext:'pdb',size:'~2.4 MB'},
+  {name:'Blot5_IgE_docking1.pdb',protein:'Blo t 5',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
+  {name:'Blot5docking.png',protein:'Blo t 5',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
+  {name:'Blot5dockingback.png',protein:'Blo t 5',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
+  {name:'Blot5dockingside.png',protein:'Blo t 5',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
 ];
 
 function renderFiles() {
