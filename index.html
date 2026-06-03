@@ -5,7 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>III Allergen Database · Universidad de Cartagena · 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.3/3Dmol-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.3/3Dmol-min.js">
+// ── LIGHTBOX ──
+let lightboxImages = [];
+let lightboxIndex = 0;
+let lightboxProtKey = '';
+
+function openLightbox(src, caption, index, protKey) {
+  lightboxProtKey = protKey;
+  lightboxIndex = index;
+  lightboxImages = modelsData[protKey].docking.images.map(img => ({
+    src: BASE_URL + img,
+    caption: img.replace('.png','').replace('.jpg','')
+  }));
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox-caption').textContent = caption;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lightboxNav(dir) {
+  lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+  const item = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-img').src = item.src;
+  document.getElementById('lightbox-caption').textContent = item.caption;
+}
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') { lb.classList.remove('open'); document.body.style.overflow = ''; }
+  if (e.key === 'ArrowRight') lightboxNav(1);
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+});
+
+</script>
 <style>
 :root {
   --bg:#F5F3EE;--surface:#FDFCF8;--border:#D8D4C8;--border-light:#E8E4DA;
@@ -128,6 +168,20 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 
 .section-title{font-family:var(--display);font-size:22px;font-weight:300;color:var(--text);margin-bottom:6px;}
 .section-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.6;}
+
+/* LIGHTBOX */
+.lightbox-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;flex-direction:column;}
+.lightbox-overlay.open{display:flex;}
+.lightbox-overlay img{max-width:90vw;max-height:80vh;border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.lightbox-caption{color:white;font-family:var(--mono);font-size:12px;margin-top:12px;opacity:0.7;}
+.lightbox-close{position:absolute;top:20px;right:24px;color:white;font-size:28px;cursor:pointer;font-family:var(--mono);opacity:0.7;border:none;background:none;line-height:1;}
+.lightbox-close:hover{opacity:1;}
+.lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);color:white;font-size:32px;cursor:pointer;background:rgba(255,255,255,0.1);border:none;padding:8px 14px;border-radius:var(--radius);font-family:var(--mono);}
+.lightbox-nav:hover{background:rgba(255,255,255,0.2);}
+.lightbox-prev{left:20px;}
+.lightbox-next{right:20px;}
+.docking-img{cursor:zoom-in;transition:transform 0.15s,box-shadow 0.15s;}
+.docking-img:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(0,0,0,0.15);}
 </style>
 </head>
 <body>
@@ -327,7 +381,7 @@ const modelsData = {
       { id:'M4CP', file:'M4Blot2cp.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'87.2'}, pTM:{val:'0.775'}, 'Z-score':{val:'-4.45'}, 'MolProbity':{val:'1.84'}, 'Clash Score':{val:'1.87',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.83'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-472.43'} }},
       { id:'M5CP', file:'M5Blot2cp.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'86.8'}, pTM:{val:'0.774'}, 'Z-score':{val:'-4.59'}, 'MolProbity':{val:'1.71',good:true}, 'Clash Score':{val:'2.34',good:true}, 'Ramachandran Fav.':{val:'90.71%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.49'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-476.95',good:true} }},
     ],
-    docking: { id:'Docking', file:'Blot2_IgE_docking.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'Blot2_IgE_docking1.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   },
   bp2: {
     name: 'BP-2',
@@ -347,7 +401,7 @@ const modelsData = {
       { id:'M4CP', file:'M4BP-2CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'84.3'}, pTM:{val:'0.612'}, 'Z-score':{val:'-3.45'}, 'MolProbity':{val:'1.93',good:true}, 'Clash Score':{val:'13.82'}, 'Ramachandran Fav.':{val:'95.04%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'60'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-728.71'} }},
       { id:'M5CP', file:'M5BP-2CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'84.9'}, pTM:{val:'0.628'}, 'Z-score':{val:'-4.10'}, 'MolProbity':{val:'2.10'}, 'Clash Score':{val:'16.58'}, 'Ramachandran Fav.':{val:'95.67%',good:true}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'4'}, 'Bad Bonds':{val:'61'}, 'QMEAN':{val:'1.31'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-851.31'} }},
     ],
-    docking: { id:'Docking', file:'BP2_IgE_docking.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'BP2_IgE_docking1.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   },
   pf14c: {
     name: 'PF14c',
@@ -367,7 +421,7 @@ const modelsData = {
       { id:'M4CP', file:'M4PF14cCP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'75.2'}, pTM:{val:'0.436'}, 'Z-score':{val:'-0.48'}, 'MolProbity':{val:'2.09'}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'85.33%'}, 'Ram. Outliers':{val:'12'}, 'Rotamer Out.':{val:'11'}, 'C-Beta Dev.':{val:'3'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-2.37'}, 'QMEANDisCo':{val:'0.63'}, 'EvoEF2 (kcal/mol)':{val:'-494.60'} }},
       { id:'M5CP', file:'M5PF14cCP.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.53'}, 'MolProbity':{val:'1.75',good:true}, 'Clash Score':{val:'0.0',good:true}, 'Ramachandran Fav.':{val:'84.67%'}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'5',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.64'}, 'QMEANDisCo':{val:'0.57'}, 'EvoEF2 (kcal/mol)':{val:'-491.53'} }},
     ],
-    docking: { id:'Docking', file:'PF14c_IgE_docking.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'PF14c_IgE_docking1.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
   }
 };
 
@@ -448,11 +502,14 @@ function selectDocking(protKey) {
 
   // Show images in metrics panel
   const panel = document.getElementById('metrics-panel');
-  let imgHtml = d.images.map(img => `
-    <div style="margin-bottom:10px;">
-      <img src="${BASE_URL+img}" alt="${img}" style="width:100%;border-radius:8px;border:1px solid var(--border-light);" onerror="this.style.display='none'">
-      <div style="font-size:10px;font-family:var(--mono);color:var(--text-faint);margin-top:4px;text-align:center">${img.replace('.png','').replace('.jpg','')}</div>
-    </div>`).join('');
+  let imgHtml = `<div id="docking-imgs-${protKey}">` + d.images.map((img,i) => `
+    <div style="margin-bottom:12px;">
+      <img class="docking-img" src="${BASE_URL+img}" alt="${img}" 
+        style="width:100%;border-radius:8px;border:1px solid var(--border-light);"
+        onclick="openLightbox('${BASE_URL+img}','${img.replace(/\.png|\.jpg/g,'')}',${i},'${protKey}')"
+        onerror="this.parentElement.style.display='none'">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--text-faint);margin-top:4px;text-align:center;cursor:zoom-in" onclick="openLightbox('${BASE_URL+img}','${img.replace(/\.png|\.jpg/g,'')}',${i},'${protKey}')">🔍 ${img.replace('.png','').replace('.jpg','')}</div>
+    </div>`).join('') + '</div>';
   let metricRows = Object.entries(d.metrics).map(([k,v]) =>
     `<div class="metric-row"><span class="metric-key">${k}</span><span class="metric-val ${v.good?'good':''}">${v.val}</span></div>`
   ).join('');
@@ -469,9 +526,9 @@ function selectDocking(protKey) {
     .then(r => { if (!r.ok) throw new Error('No encontrado'); return r.text(); })
     .then(pdbData => {
       placeholder.style.display = 'none';
-      viewer3d.addModel(pdbData, 'pdb');
-      // Color by chain: A=cyan (IgE), B=pink (proteína)
-      viewer3d.setStyle({chain:'A'}, {cartoon:{color:'#5BA4CF'}});
+      // Load all models (MODEL 1 + MODEL 2) and merge
+      viewer3d.addModelsAsFrames(pdbData, 'pdb');
+      viewer3d.setStyle({}, {cartoon:{color:'#5BA4CF'}});
       viewer3d.setStyle({chain:'B'}, {cartoon:{color:'#E8A0BF'}});
       viewer3d.zoomTo();
       viewer3d.render();
@@ -617,15 +674,15 @@ const filesData = [
   {name:'M4PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M4',ext:'pdb',size:'~2.8 MB'},
   {name:'M5PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M5 ★★',ext:'pdb',size:'~2.8 MB'},
   // Docking IgE
-  {name:'Blot2_IgE_docking.pdb',protein:'Blo t 2',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
+  {name:'Blot2_IgE_docking1.pdb',protein:'Blo t 2',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
   {name:'Blot2docking.png',protein:'Blo t 2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'Blot2dockingback.png',protein:'Blo t 2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'Blot2dockingside.png',protein:'Blo t 2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
-  {name:'BP2_IgE_docking.pdb',protein:'BP-2',type:'Complejo IgE · Docking',ext:'pdb',size:'~6 MB'},
+  {name:'BP2_IgE_docking1.pdb',protein:'BP-2',type:'Complejo IgE · Docking',ext:'pdb',size:'~6 MB'},
   {name:'BP2docking.png',protein:'BP-2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'BP2dockingback.png',protein:'BP-2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'BP2dockingside.png',protein:'BP-2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
-  {name:'PF14c_IgE_docking.pdb',protein:'PF14c',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
+  {name:'PF14c_IgE_docking1.pdb',protein:'PF14c',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
   {name:'PF14cdocking.png',protein:'PF14c',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'PF14cdockingback.png',protein:'PF14c',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'PF14cdockingside.png',protein:'PF14c',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
@@ -646,6 +703,56 @@ function renderFiles() {
 renderEpitopes('all');
 renderFiles();
 loadProtein('blot2');
+
+// ── LIGHTBOX ──
+let lightboxImages = [];
+let lightboxIndex = 0;
+let lightboxProtKey = '';
+
+function openLightbox(src, caption, index, protKey) {
+  lightboxProtKey = protKey;
+  lightboxIndex = index;
+  lightboxImages = modelsData[protKey].docking.images.map(img => ({
+    src: BASE_URL + img,
+    caption: img.replace('.png','').replace('.jpg','')
+  }));
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox-caption').textContent = caption;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lightboxNav(dir) {
+  lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+  const item = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-img').src = item.src;
+  document.getElementById('lightbox-caption').textContent = item.caption;
+}
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') { lb.classList.remove('open'); document.body.style.overflow = ''; }
+  if (e.key === 'ArrowRight') lightboxNav(1);
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+});
+
 </script>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();lightboxNav(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();lightboxNav(1)">›</button>
+</div>
+
 </body>
 </html>
