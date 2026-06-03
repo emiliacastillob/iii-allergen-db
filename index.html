@@ -3,1039 +3,339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>III Allergen Database · Universidad de Cartagena</title>
+<title>III Allergen Database · Universidad de Cartagena · 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.0.3/3Dmol-min.js"></script>
 <style>
-  :root {
-    --bg: #F5F3EE;
-    --surface: #FDFCF8;
-    --border: #D8D4C8;
-    --border-light: #E8E4DA;
-    --text: #1A1916;
-    --text-muted: #6B6760;
-    --text-faint: #A8A49C;
-    --accent: #1A5C3A;
-    --accent-light: #E8F2EC;
-    --accent-mid: #2D7A50;
-    --blue: #1B3F6E;
-    --blue-light: #E8EFF8;
-    --purple: #3D2B6E;
-    --purple-light: #EEE8F8;
-    --amber: #7A4A0E;
-    --amber-light: #FBF0E0;
-    --mono: 'IBM Plex Mono', monospace;
-    --display: 'Fraunces', serif;
-    --sans: 'DM Sans', sans-serif;
-    --radius: 8px;
-    --radius-lg: 14px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 220px;
-    height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    overflow-y: auto;
-  }
-
-  .sidebar-logo {
-    padding: 28px 24px 20px;
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  .sidebar-logo .wordmark {
-    font-family: var(--display);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .sidebar-logo .inst {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    font-family: var(--mono);
-    letter-spacing: 0.02em;
-  }
-
-  .sidebar-logo .version {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 10px;
-    font-family: var(--mono);
-    padding: 2px 8px;
-    background: var(--accent-light);
-    color: var(--accent);
-    border-radius: 99px;
-  }
-
-  .nav-section {
-    padding: 20px 16px 8px;
-  }
-
-  .nav-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    letter-spacing: 0.08em;
-    color: var(--text-faint);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    padding: 0 8px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 13.5px;
-    color: var(--text-muted);
-    transition: all 0.15s;
-    text-decoration: none;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-  }
-
-  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-  .nav-item:hover { background: var(--bg); color: var(--text); }
-
-  .nav-item.active {
-    background: var(--accent-light);
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .sidebar-footer {
-    margin-top: auto;
-    padding: 20px 24px;
-    border-top: 1px solid var(--border-light);
-    font-size: 11px;
-    color: var(--text-faint);
-    font-family: var(--mono);
-    line-height: 1.8;
-  }
-
-  /* ── MAIN ── */
-  .main {
-    margin-left: 220px;
-    min-height: 100vh;
-  }
-
-  .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .topbar h1 {
-    font-family: var(--display);
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--text);
-  }
-
-  .topbar-meta {
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--text-faint);
-  }
-
-  .content {
-    padding: 36px 40px 60px;
-  }
-
-  /* ── SECTIONS ── */
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* ── STATS ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 16px 18px;
-  }
-
-  .stat-val {
-    font-family: var(--display);
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--text);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    font-family: var(--mono);
-    color: var(--text-faint);
-    margin-top: 6px;
-    letter-spacing: 0.03em;
-  }
-
-  /* ── PROTEIN CARDS ── */
-  .protein-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-    margin-bottom: 32px;
-  }
-
-  .protein-card {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .protein-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-
-  .protein-card.green::before { background: var(--accent); }
-  .protein-card.blue::before { background: var(--blue); }
-  .protein-card.purple::before { background: var(--purple); }
-
-  .protein-card:hover {
-    border-color: var(--border);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  }
-
-  .protein-card h3 {
-    font-family: var(--display);
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .protein-card p {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 12px;
-  }
-
-  .chip {
-    display: inline-block;
-    font-size: 10px;
-    font-family: var(--mono);
-    padding: 3px 8px;
-    border-radius: 99px;
-    letter-spacing: 0.02em;
-  }
-
-  .chip-green { background: var(--accent-light); color: var(--accent); }
-  .chip-blue { background: var(--blue-light); color: var(--blue); }
-  .chip-purple { background: var(--purple-light); color: var(--purple); }
-
-  /* ── ABOUT BOX ── */
-  .about-box {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-  }
-
-  .about-box h3 {
-    font-family: var(--display);
-    font-size: 16px;
-    font-weight: 300;
-    margin-bottom: 10px;
-  }
-
-  .about-box p {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.7;
-  }
-
-  /* ── VIEWER ── */
-  .viewer-protein-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-
-  .prot-btn {
-    font-size: 13px;
-    font-family: var(--mono);
-    padding: 7px 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .prot-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .prot-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
-
-  .style-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-
-  .style-btn {
-    font-size: 12px;
-    font-family: var(--mono);
-    padding: 5px 12px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-light);
-    background: transparent;
-    color: var(--text-faint);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .style-btn:hover { border-color: var(--border); color: var(--text-muted); }
-
-  .viewer-box {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    height: 420px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-
-  #mol-viewer { width: 100%; height: 100%; }
-
-  .viewer-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-faint);
-    font-family: var(--mono);
-    font-size: 12px;
-    text-align: center;
-    gap: 10px;
-  }
-
-  .viewer-placeholder svg { width: 48px; height: 48px; opacity: 0.3; }
-
-  .viewer-hint {
-    background: var(--bg);
-    border-radius: var(--radius);
-    padding: 10px 14px;
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--text-faint);
-    line-height: 1.6;
-  }
-
-  /* ── EPITOPES ── */
-  .filter-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    font-size: 12px;
-    font-family: var(--mono);
-    padding: 6px 14px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
-
-  .ep-group { margin-bottom: 32px; }
-
-  .ep-group-title {
-    font-family: var(--display);
-    font-size: 18px;
-    font-weight: 300;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  .ep-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-light);
-  }
-
-  .ep-item:last-child { border-bottom: none; }
-
-  .ep-seq {
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: var(--radius);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .ep-linear { background: var(--blue-light); color: var(--blue); }
-  .ep-conf { background: var(--purple-light); color: var(--purple); }
-  .ep-t { background: var(--accent-light); color: var(--accent); }
-
-  .ep-meta { font-size: 12px; color: var(--text-faint); font-family: var(--mono); line-height: 1.6; }
-  .ep-meta strong { color: var(--text-muted); font-weight: 500; }
-
-  /* ── FILES ── */
-  .files-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 10px;
-  }
-
-  .file-card {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: border-color 0.15s;
-  }
-
-  .file-card:hover { border-color: var(--border); }
-
-  .file-icon {
-    width: 36px; height: 36px;
-    border-radius: var(--radius);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    font-family: var(--mono);
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-
-  .icon-pdb { background: var(--blue-light); color: var(--blue); }
-  .icon-fasta { background: var(--accent-light); color: var(--accent); }
-  .icon-nc { background: var(--amber-light); color: var(--amber); }
-  .icon-csv { background: var(--purple-light); color: var(--purple); }
-  .icon-pdf { background: #FDECEA; color: #8B2020; }
-
-  .file-info { flex: 1; min-width: 0; }
-  .file-name { font-size: 12.5px; font-family: var(--mono); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .file-sub { font-size: 11px; color: var(--text-faint); margin-top: 2px; font-family: var(--mono); }
-
-  .dl-btn {
-    font-size: 11px;
-    font-family: var(--mono);
-    padding: 5px 10px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-faint);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-
-  .dl-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-
-  /* ── METHODOLOGY ── */
-  .method-list { display: flex; flex-direction: column; gap: 0; }
-
-  .method-step {
-    display: flex;
-    gap: 0;
-    position: relative;
-  }
-
-  .step-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 48px;
-    flex-shrink: 0;
-  }
-
-  .step-num {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 12px;
-    font-family: var(--mono);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    z-index: 1;
-    border: 1px solid var(--accent);
-  }
-
-  .step-line {
-    width: 1px;
-    flex: 1;
-    background: var(--border-light);
-    margin: 4px 0;
-    min-height: 24px;
-  }
-
-  .step-body {
-    padding: 4px 0 28px 16px;
-    flex: 1;
-  }
-
-  .step-body h4 {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .step-body p {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 8px;
-  }
-
-  .tool-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-
-  .tool-tag {
-    font-size: 10.5px;
-    font-family: var(--mono);
-    padding: 3px 8px;
-    border-radius: var(--radius);
-    background: var(--bg);
-    color: var(--text-muted);
-    border: 1px solid var(--border-light);
-  }
-
-  /* ── UPLOAD ── */
-  .upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius-lg);
-    padding: 48px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 24px;
-  }
-
-  .upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
-
-  .upload-zone svg { width: 40px; height: 40px; color: var(--text-faint); margin-bottom: 12px; }
-  .upload-zone p { font-size: 14px; color: var(--text-muted); }
-  .upload-zone small { font-size: 11px; font-family: var(--mono); color: var(--text-faint); margin-top: 6px; display: block; }
-
-  .form-card {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-
-  .form-card h3 {
-    font-family: var(--display);
-    font-size: 16px;
-    font-weight: 300;
-    margin-bottom: 18px;
-    color: var(--text);
-  }
-
-  .form-grid { display: grid; gap: 14px; }
-
-  .form-field label {
-    display: block;
-    font-size: 11px;
-    font-family: var(--mono);
-    color: var(--text-faint);
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-  }
-
-  .form-field input,
-  .form-field select,
-  .form-field textarea {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 13.5px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .form-field input:focus,
-  .form-field select:focus,
-  .form-field textarea:focus { border-color: var(--accent); }
-
-  .form-field textarea { min-height: 80px; resize: vertical; }
-
-  .submit-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: var(--radius);
-    border: 1px solid var(--accent);
-    background: var(--accent-light);
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 4px;
-  }
-
-  .submit-btn:hover { background: var(--accent); color: white; }
-
-  .info-note {
-    background: var(--bg);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--text-faint);
-    line-height: 1.7;
-  }
-
-  /* ── HOW TO USE SECTION ── */
-  .howto-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-    margin-top: 24px;
-  }
-
-  .howto-card {
-    background: var(--surface);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    padding: 18px;
-  }
-
-  .howto-card h4 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
-  .howto-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-  .howto-card .step-code { font-family: var(--mono); font-size: 11px; background: var(--bg); padding: 8px 10px; border-radius: var(--radius); margin-top: 8px; color: var(--accent); border: 1px solid var(--border-light); }
-
-  /* ── MISC ── */
-  .section-title {
-    font-family: var(--display);
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .section-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 28px;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 768px) {
-    .sidebar { width: 100%; height: auto; position: relative; }
-    .main { margin-left: 0; }
-    .content { padding: 24px 20px; }
-    .topbar { padding: 14px 20px; }
-  }
+:root {
+  --bg:#F5F3EE;--surface:#FDFCF8;--border:#D8D4C8;--border-light:#E8E4DA;
+  --text:#1A1916;--text-muted:#6B6760;--text-faint:#A8A49C;
+  --accent:#1A5C3A;--accent-light:#E8F2EC;--accent-mid:#2D7A50;
+  --blue:#1B3F6E;--blue-light:#E8EFF8;--purple:#3D2B6E;--purple-light:#EEE8F8;
+  --amber:#7A4A0E;--amber-light:#FBF0E0;
+  --mono:'IBM Plex Mono',monospace;--display:'Fraunces',serif;--sans:'DM Sans',sans-serif;
+  --radius:8px;--radius-lg:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border-light);}
+.sidebar-logo .wordmark{font-family:var(--display);font-size:16px;font-weight:500;color:var(--text);line-height:1.3;}
+.sidebar-logo .inst{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--mono);letter-spacing:.02em;}
+.sidebar-logo .version{display:inline-block;margin-top:10px;font-size:10px;font-family:var(--mono);padding:2px 8px;background:var(--accent-light);color:var(--accent);border-radius:99px;}
+.nav-section{padding:20px 16px 8px;}
+.nav-label{font-size:10px;font-family:var(--mono);letter-spacing:.08em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px;padding:0 8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;font-size:13.5px;color:var(--text-muted);transition:all .15s;text-decoration:none;border:none;background:none;width:100%;text-align:left;}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.nav-item:hover{background:var(--bg);color:var(--text);}
+.nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:500;}
+.sidebar-footer{margin-top:auto;padding:20px 24px;border-top:1px solid var(--border-light);font-size:11px;color:var(--text-faint);font-family:var(--mono);line-height:1.8;}
+.main{margin-left:220px;min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar h1{font-family:var(--display);font-size:18px;font-weight:300;color:var(--text);}
+.topbar-meta{font-size:12px;font-family:var(--mono);color:var(--text-faint);}
+.content{padding:36px 40px 60px;}
+.section{display:none;}
+.section.active{display:block;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:32px;}
+.stat{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:16px 18px;}
+.stat-val{font-family:var(--display);font-size:32px;font-weight:300;color:var(--text);line-height:1;}
+.stat-label{font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-top:6px;letter-spacing:.03em;}
+.protein-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:32px;}
+.protein-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.protein-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.protein-card.green::before{background:var(--accent);}
+.protein-card.blue::before{background:var(--blue);}
+.protein-card.purple::before{background:var(--purple);}
+.protein-card:hover{border-color:var(--border);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.protein-card h3{font-family:var(--display);font-size:20px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.protein-card p{font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-bottom:12px;}
+.chip{display:inline-block;font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:99px;letter-spacing:.02em;}
+.chip-green{background:var(--accent-light);color:var(--accent);}
+.chip-blue{background:var(--blue-light);color:var(--blue);}
+.chip-purple{background:var(--purple-light);color:var(--purple);}
+.about-box{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:24px;}
+.about-box h3{font-family:var(--display);font-size:16px;font-weight:300;margin-bottom:10px;}
+.about-box p{font-size:13.5px;color:var(--text-muted);line-height:1.7;}
+/* VIEWER */
+.viewer-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;margin-bottom:20px;}
+.viewer-controls-top{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.prot-select{font-size:13px;font-family:var(--mono);padding:7px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;}
+.prot-select:focus{outline:none;border-color:var(--accent);}
+.model-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.model-tab{font-size:11px;font-family:var(--mono);padding:5px 10px;border-radius:var(--radius);border:1px solid var(--border-light);background:transparent;color:var(--text-faint);cursor:pointer;transition:all .15s;}
+.model-tab:hover{border-color:var(--border);color:var(--text-muted);}
+.model-tab.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent);font-weight:500;}
+.model-tab.selected-model{background:var(--amber-light);border-color:var(--amber);color:var(--amber);}
+.style-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.style-btn{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:var(--radius);border:1px solid var(--border-light);background:transparent;color:var(--text-faint);cursor:pointer;transition:all .15s;}
+.style-btn:hover{border-color:var(--border);color:var(--text-muted);}
+.viewer-box{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);height:420px;position:relative;overflow:hidden;}
+#mol-viewer{width:100%;height:100%;}
+.viewer-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;gap:10px;}
+.viewer-placeholder svg{width:48px;height:48px;opacity:.3;}
+.metrics-panel{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:18px;overflow-y:auto;max-height:480px;}
+.metrics-panel h4{font-family:var(--display);font-size:15px;font-weight:300;margin-bottom:4px;color:var(--text);}
+.metrics-panel .model-name{font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-bottom:14px;}
+.metric-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-light);font-size:12px;}
+.metric-row:last-child{border-bottom:none;}
+.metric-key{color:var(--text-muted);font-family:var(--mono);font-size:11px;}
+.metric-val{color:var(--text);font-weight:500;font-family:var(--mono);font-size:11px;}
+.metric-val.good{color:var(--accent);}
+.metric-val.warn{color:var(--amber);}
+.badge-selected{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;background:var(--amber-light);color:var(--amber);border-radius:99px;margin-left:6px;vertical-align:middle;}
+.badge-best{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;background:var(--accent-light);color:var(--accent);border-radius:99px;margin-left:6px;vertical-align:middle;}
+.viewer-hint{background:var(--bg);border-radius:var(--radius);padding:10px 14px;font-size:11px;font-family:var(--mono);color:var(--text-faint);line-height:1.6;margin-top:8px;}
+/* EPITOPES */
+.filter-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.filter-btn{font-size:12px;font-family:var(--mono);padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .15s;}
+.filter-btn.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.ep-group{margin-bottom:32px;}
+.ep-group-title{font-family:var(--display);font-size:18px;font-weight:300;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border-light);}
+.ep-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light);}
+.ep-item:last-child{border-bottom:none;}
+.ep-seq{font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:var(--radius);white-space:nowrap;flex-shrink:0;}
+.ep-linear{background:var(--blue-light);color:var(--blue);}
+.ep-conf{background:var(--purple-light);color:var(--purple);}
+.ep-t{background:var(--accent-light);color:var(--accent);}
+.ep-meta{font-size:12px;color:var(--text-faint);font-family:var(--mono);line-height:1.6;}
+.ep-meta strong{color:var(--text-muted);font-weight:500;}
+/* FILES */
+.files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.file-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .15s;}
+.file-card:hover{border-color:var(--border);}
+.file-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:var(--mono);font-weight:500;flex-shrink:0;}
+.icon-pdb{background:var(--blue-light);color:var(--blue);}
+.icon-fasta{background:var(--accent-light);color:var(--accent);}
+.icon-nc{background:var(--amber-light);color:var(--amber);}
+.icon-csv{background:var(--purple-light);color:var(--purple);}
+.file-info{flex:1;min-width:0;}
+.file-name{font-size:12.5px;font-family:var(--mono);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-sub{font-size:11px;color:var(--text-faint);margin-top:2px;font-family:var(--mono);}
+.dl-btn{font-size:11px;font-family:var(--mono);padding:5px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.dl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+/* METHODOLOGY */
+.method-list{display:flex;flex-direction:column;}
+.method-step{display:flex;gap:0;position:relative;}
+.step-left{display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:12px;font-family:var(--mono);font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;border:1px solid var(--accent);}
+.step-line{width:1px;flex:1;background:var(--border-light);margin:4px 0;min-height:24px;}
+.step-body{padding:4px 0 28px 16px;flex:1;}
+.step-body h4{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.step-body p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:8px;}
+.tool-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tool-tag{font-size:10.5px;font-family:var(--mono);padding:3px 8px;border-radius:var(--radius);background:var(--bg);color:var(--text-muted);border:1px solid var(--border-light);}
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:48px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:24px;}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-light);}
+.upload-zone svg{width:40px;height:40px;color:var(--text-faint);margin-bottom:12px;}
+.upload-zone p{font-size:14px;color:var(--text-muted);}
+.upload-zone small{font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-top:6px;display:block;}
+.form-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;}
+.form-card h3{font-family:var(--display);font-size:16px;font-weight:300;margin-bottom:18px;color:var(--text);}
+.form-grid{display:grid;gap:14px;}
+.form-field label{display:block;font-size:11px;font-family:var(--mono);color:var(--text-faint);letter-spacing:.04em;margin-bottom:6px;text-transform:uppercase;}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13.5px;outline:none;transition:border-color .15s;}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent);}
+.form-field textarea{min-height:80px;resize:vertical;}
+.submit-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--accent);background:var(--accent-light);color:var(--accent);font-family:var(--mono);font-size:13px;cursor:pointer;transition:all .15s;margin-top:4px;}
+.submit-btn:hover{background:var(--accent);color:white;}
+.info-note{background:var(--bg);border:1px solid var(--border-light);border-radius:var(--radius);padding:12px 16px;font-size:12px;font-family:var(--mono);color:var(--text-faint);line-height:1.7;}
+.section-title{font-family:var(--display);font-size:22px;font-weight:300;color:var(--text);margin-bottom:6px;}
+.section-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.6;}
 </style>
 </head>
 <body>
-
 <nav class="sidebar">
   <div class="sidebar-logo">
     <div class="wordmark">III Allergen<br>Database</div>
     <div class="inst">Inmunología · UniCartagena</div>
     <span class="version">v1.0 · 2026</span>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">General</div>
-    <button class="nav-item active" onclick="nav('overview', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Inicio
+    <button class="nav-item active" onclick="nav('overview',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Inicio
     </button>
-    <button class="nav-item" onclick="nav('viewer', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Visualizador 3D
+    <button class="nav-item" onclick="nav('viewer',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Visualizador 3D
     </button>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Datos</div>
-    <button class="nav-item" onclick="nav('epitopes', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Epítopes
+    <button class="nav-item" onclick="nav('epitopes',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Epítopes
     </button>
-    <button class="nav-item" onclick="nav('files', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
-      Archivos
+    <button class="nav-item" onclick="nav('files',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>Archivos
     </button>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Metodología</div>
-    <button class="nav-item" onclick="nav('methodology', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/></svg>
-      Protocolo
+    <button class="nav-item" onclick="nav('methodology',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/></svg>Protocolo
     </button>
-    <button class="nav-item" onclick="nav('upload', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-      Subir datos
-    </button>
-    <button class="nav-item" onclick="nav('howto', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      Cómo usar
+    <button class="nav-item" onclick="nav('upload',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>Subir datos
     </button>
   </div>
-
-  <div class="sidebar-footer">
-    Emilia · Tesis de Maestría<br>
-    Instituto de Investigaciones<br>
-    Inmunológicas · 2026<br><br>
-  </div>
+  <div class="sidebar-footer">Emilia · Tesis de Maestría<br>Instituto de Investigaciones<br>Inmunológicas · 2026<br><br><span style="color:var(--accent)">Ácaros del polvo doméstico</span></div>
 </nav>
 
 <div class="main">
   <div class="topbar">
     <h1 id="page-title">Inicio</h1>
-    <span class="topbar-meta">Blo t 2 · BP-2 · PF14c</span>
+    <span class="topbar-meta">Blo t 2 · BP-2 · PF14c · 2026</span>
   </div>
-
   <div class="content">
 
     <!-- OVERVIEW -->
     <div id="overview" class="section active">
       <p class="section-title">Colección de alérgenos</p>
-      <p class="section-sub">Datos estructurales y antigénicos generados a partir de la tesis de la Maestría en Inmunología titulado "Análisis estructural y predicción de epítopes B y T de alérgenos
-recombinantes y proteínas híbridas derivadas de ácaros de polvo doméstico: un estudio in silico. Diseñado para crecer con nuevas proteínas caracterizadas con la misma metodología.</p>
-
+      <p class="section-sub">Datos estructurales y antigénicos generados en la tesis de maestría en inmunología del Instituto de Investigaciones Inmunológicas de la Universidad de Cartagena.</p>
       <div class="stats-row">
         <div class="stat"><div class="stat-val">3</div><div class="stat-label">proteínas</div></div>
+        <div class="stat"><div class="stat-val">30</div><div class="stat-label">modelos 3D</div></div>
         <div class="stat"><div class="stat-val">34</div><div class="stat-label">epítopes B</div></div>
         <div class="stat"><div class="stat-val">20</div><div class="stat-label">epítopes T</div></div>
         <div class="stat"><div class="stat-val">500</div><div class="stat-label">ns MD</div></div>
         <div class="stat"><div class="stat-val">8</div><div class="stat-label">alelos HLA</div></div>
-        <div class="stat"><div class="stat-val">18</div><div class="stat-label">archivos</div></div>
       </div>
-
       <div class="protein-grid">
-        <div class="protein-card green" onclick="nav('viewer', null); selectProtein('blo-t-2')">
+        <div class="protein-card green" onclick="nav('viewer',null);loadProtein('blot2')">
           <h3>Blo t 2</h3>
-          <p>Alérgeno recombinante de <em>Blomia tropicalis</em>. Arquitectura β-sándwich. Caracterización estructural y antigénica.</p>
+          <p>Alérgeno recombinante de <em>Blomia tropicalis</em>. Arquitectura β-sándwich. Primera caracterización estructural y antigénica. 10 modelos pre-MD.</p>
           <span class="chip chip-green">Alérgeno natural</span>
         </div>
-        <div class="protein-card blue" onclick="nav('viewer', null); selectProtein('bp-2')">
+        <div class="protein-card blue" onclick="nav('viewer',null);loadProtein('bp2')">
           <h3>BP-2</h3>
-          <p>Proteína híbrida Blo t 5 + Der p 2. 272 aa. Arquitectura mixta con la región N-terminal constituida por alpha hélice y la región C-terminal por lámitas beta.</p>
+          <p>Proteína híbrida Blo t 5 + Der p 2. 272 aa. Modelo seleccionado: M3CP. Mayor diversidad de epítopes T en alelos HLA colombianos.</p>
           <span class="chip chip-blue">Proteína híbrida</span>
         </div>
-        <div class="protein-card purple" onclick="nav('viewer', null); selectProtein('pf14c')">
+        <div class="protein-card purple" onclick="nav('viewer',null);loadProtein('pf14c')">
           <h3>PF14c</h3>
-          <p>Proteína híbrida pentamérica formada por Blo t 5, Blo t 8 , Blo t 10, Blo t 12 y Blo t 13 de <em>B. tropicalis</em>. 152 aa.</p>
+          <p>Proteína híbrida pentamérica de <em>B. tropicalis</em>. 152 aa. Modelo seleccionado: M5CP. Patente US 9,163,069 B2.</p>
           <span class="chip chip-purple">Proteína híbrida</span>
         </div>
       </div>
-
       <div class="about-box">
         <h3>Sobre esta base de datos</h3>
-        <p>Este repositorio reúne los datos estructurales y antigénicos generados en la tesis de maestría en inmunología del Instituto de Investigaciones Inmunológicas de la Universidad de Cartagena. Incluye modelos 3D pre y post-dinámica molecular, predicciones de epítopes B lineales y conformacionales, epítopes T para alelos HLA frecuentes en población colombiana, y datos de interacción con IgE. Está diseñado para acumular nuevas proteínas caracterizadas con la misma metodología y servir como base de entrenamiento de modelos de inteligencia artificial institucionales.</p>
+        <p>Este repositorio reúne los modelos estructurales 3D (5 sin plantillas + 5 con plantillas por proteína), parámetros de dinámica molecular, predicciones de epítopes B lineales y conformacionales, epítopes T para alelos HLA frecuentes en población colombiana, y datos de interacción con IgE. Los modelos incluyen sus métricas completas de validación estructural (MolProbity, Ramachandran, ProSA Z-score, QMEAN, EvoEF2).</p>
       </div>
     </div>
 
     <!-- VIEWER -->
     <div id="viewer" class="section">
       <p class="section-title">Visualizador 3D</p>
-      <p class="section-sub">Modelos estructurales post-dinámica molecular.</p>
+      <p class="section-sub">Selecciona proteína y modelo. SP = sin plantillas · CP = con plantillas. El modelo resaltado en <span style="color:var(--amber);font-weight:500">naranja</span> fue seleccionado para dinámica molecular. Los valores de las métricas provienen de las tablas de validación de la tesis.</p>
 
-      <div class="viewer-protein-row">
-        <button class="prot-btn" id="btn-blo-t-2" onclick="selectProtein('blo-t-2')">Blo t 2</button>
-        <button class="prot-btn" id="btn-bp-2" onclick="selectProtein('bp-2')">BP-2</button>
-        <button class="prot-btn" id="btn-pf14c" onclick="selectProtein('pf14c')">PF14c</button>
+      <div class="viewer-controls-top">
+        <select class="prot-select" id="prot-select" onchange="loadProtein(this.value)">
+          <option value="blot2">Blo t 2</option>
+          <option value="bp2">BP-2</option>
+          <option value="pf14c">PF14c</option>
+        </select>
+        <span style="font-size:12px;font-family:var(--mono);color:var(--text-faint);">Selecciona modelo:</span>
       </div>
+
+      <div id="model-tabs" class="model-tabs"></div>
 
       <div class="style-row">
         <button class="style-btn" onclick="setStyle('cartoon')">Cartoon</button>
         <button class="style-btn" onclick="setStyle('surface')">Superficie</button>
         <button class="style-btn" onclick="setStyle('stick')">Bastones</button>
         <button class="style-btn" onclick="setStyle('sphere')">Esferas</button>
-        <button class="style-btn" onclick="resetView()">Restablecer vista</button>
+        <button class="style-btn" onclick="if(viewer3d){viewer3d.zoomTo();viewer3d.render();}">Restablecer</button>
       </div>
 
-      <div class="viewer-box">
-        <div id="mol-viewer"></div>
-        <div id="viewer-placeholder" class="viewer-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>Selecciona una proteína arriba</span>
-          <span style="font-size:11px;">Sube tu archivo .pdb en la sección "Subir datos"<br>y actualiza la variable pdbFiles en el código</span>
+      <div class="viewer-layout">
+        <div>
+          <div class="viewer-box">
+            <div id="mol-viewer"></div>
+            <div id="viewer-placeholder" class="viewer-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <span>Selecciona una proteína y modelo</span>
+              <span style="font-size:11px">Los archivos .pdb deben estar en tu repositorio de GitHub</span>
+            </div>
+          </div>
+          <div class="viewer-hint">Rotar: clic + arrastrar · Zoom: rueda · Trasladar: clic derecho + arrastrar</div>
         </div>
-      </div>
-
-      <div class="viewer-hint">
-        Rotar: clic + arrastrar &nbsp;·&nbsp; Zoom: rueda del ratón &nbsp;·&nbsp; Trasladar: clic derecho + arrastrar<br>
-        Los archivos .pdb deben estar en la carpeta <code>proteins/</code> de tu repositorio GitHub.
+        <div class="metrics-panel" id="metrics-panel">
+          <div style="color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;margin-top:40px;">Selecciona un modelo<br>para ver sus métricas</div>
+        </div>
       </div>
     </div>
 
     <!-- EPITOPES -->
     <div id="epitopes" class="section">
       <p class="section-title">Epítopes predichos</p>
-      <p class="section-sub">Predicciones con umbral de confianza moderada. Epítopes B lineales (BepiPred 3.0), conformacionales (DiscoTope 3.0 + Ellipro) y T CD4+ (NetMHCIIpan 4.0).</p>
-
+      <p class="section-sub">Umbral de confianza moderada. B lineales (BepiPred 3.0) · B conformacionales (DiscoTope 3.0 + Ellipro) · T CD4+ (NetMHCIIpan 4.0).</p>
       <div class="filter-row">
-        <button class="filter-btn active" onclick="filterEp('all', this)">Todos</button>
-        <button class="filter-btn" onclick="filterEp('Blo t 2', this)">Blo t 2</button>
-        <button class="filter-btn" onclick="filterEp('BP-2', this)">BP-2</button>
-        <button class="filter-btn" onclick="filterEp('PF14c', this)">PF14c</button>
-        <button class="filter-btn" onclick="filterEp('Lineal', this)">B lineales</button>
-        <button class="filter-btn" onclick="filterEp('Conformacional', this)">B conformacionales</button>
-        <button class="filter-btn" onclick="filterEp('T CD4+', this)">T CD4+</button>
+        <button class="filter-btn active" onclick="filterEp('all',this)">Todos</button>
+        <button class="filter-btn" onclick="filterEp('Blo t 2',this)">Blo t 2</button>
+        <button class="filter-btn" onclick="filterEp('BP-2',this)">BP-2</button>
+        <button class="filter-btn" onclick="filterEp('PF14c',this)">PF14c</button>
+        <button class="filter-btn" onclick="filterEp('Lineal',this)">B lineales</button>
+        <button class="filter-btn" onclick="filterEp('Conformacional',this)">B conformacionales</button>
+        <button class="filter-btn" onclick="filterEp('T CD4+',this)">T CD4+</button>
       </div>
-
       <div id="epitopes-container"></div>
     </div>
 
     <!-- FILES -->
     <div id="files" class="section">
       <p class="section-title">Archivos</p>
-      <p class="section-sub">Todos los archivos generados en la tesis. Para descargar, abre el repositorio en GitHub y descarga directamente.</p>
+      <p class="section-sub">Modelos estructurales, secuencias y datos analíticos generados en la tesis.</p>
       <div class="files-grid" id="files-grid"></div>
     </div>
 
     <!-- METHODOLOGY -->
     <div id="methodology" class="section">
       <p class="section-title">Protocolo metodológico</p>
-      <p class="section-sub">Ruta replicable para la caracterización estructural y antigénica de nuevas proteínas alergénicas. Cada paso genera archivos que se agregan a esta base de datos.</p>
-
+      <p class="section-sub">Ruta replicable de 7 pasos para la caracterización estructural y antigénica de nuevas proteínas alergénicas.</p>
       <div class="method-list">
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Secuencia y modificaciones post-traduccionales</h4>
-            <p>Obtención de la secuencia FASTA desde GenBank o UniProt. Predicción de PTMs y puentes disulfuro. Análisis del índice antigénico (Jameson-Wolf).</p>
-            <div class="tool-tags"><span class="tool-tag">MusiteDeep</span><span class="tool-tag">Disulfide by Design 2.0</span><span class="tool-tag">Protean3D</span></div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Modelado y validación estructural 3D</h4>
-            <p>Generación de modelos tridimensionales con y sin plantillas. Validación de calidad estereoquímica. Selección del mejor modelo.</p>
-            <div class="tool-tags"><span class="tool-tag">ColabFold</span><span class="tool-tag">SwissModelo.MolProbity</span><span class="tool-tag">ProSAweb</span><span class="tool-tag">EvoEF2</span><span class="tool-tag">UCSF Chimera</span></div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Simulación de dinámica molecular</h4>
-            <p>Simulaciones de 400 ns en agua explícita. Análisis de RMSD, RMSF, radio de giro y SASA. Refinamiento del modelo estructural.</p>
-            <div class="tool-tags"><span class="tool-tag">AmberTool</span><span class="tool-tag">Cpptraj</span><span class="tool-tag">Xmgrace</div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Predicción de epítopes B lineales</h4>
-            <p>Predicción con umbral de confianza moderada (top 50%) y alta (top 20%). Comparación con epítopes reportados en bases de datos.</p>
-            <div class="tool-tags"><span class="tool-tag">BepiPred 3.0</span><span class="tool-tag">IEDB</span></div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Predicción de epítopes B conformacionales</h4>
-            <p>Identificación de residuos superficiales con potencial antigénico. Combinación de herramientas para mayor cobertura.</p>
-            <div class="tool-tags"><span class="tool-tag">DiscoTope 3.0</span><span class="tool-tag">Ellipro</span></div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div>
-          <div class="step-body">
-            <h4>Predicción de epítopes T CD4+</h4>
-            <p>Ligandos para alelos HLA clase II frecuentes en población colombiana. Clasificación en strong binders (Rank ≤1%) y weak binders (Rank 1-5%).</p>
-            <div class="tool-tags"><span class="tool-tag">NetMHCIIpan 4.0</span><span class="tool-tag">IEDB</span></div>
-          </div>
-        </div>
-        <div class="method-step">
-          <div class="step-left"><div class="step-num">7</div></div>
-          <div class="step-body">
-            <h4>Docking molecular con IgE</h4>
-            <p>Acoplamiento proteína-proteína con la región Fab de IgE humana. Cálculo de energía libre de unión por MM/GBSA. Identificación de parches de interacción.</p>
-            <div class="tool-tags"><span class="tool-tag">HawkDock</span><span class="tool-tag">MM/GBSA</span><span class="tool-tag">PDB: 7MLH</span><span class="tool-tag">UCSF Chimera</span></div>
-          </div>
-        </div>
+        <div class="method-step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><h4>Secuencia y PTMs</h4><p>Obtención de la secuencia FASTA. Predicción de modificaciones post-traduccionales y puentes disulfuro.</p><div class="tool-tags"><span class="tool-tag">MusiteDeep</span><span class="tool-tag">Disulfide by Design 2.0</span><span class="tool-tag">Protscale</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><h4>Modelado 3D sin plantillas</h4><p>5 modelos template-free. Validación con MolProbity, ProSA, QMEAN y EvoEF2. Selección del mejor modelo.</p><div class="tool-tags"><span class="tool-tag">ColabFold</span><span class="tool-tag">SWISS-MODEL</span><span class="tool-tag">ProSA-web</span><span class="tool-tag">EvoEF2</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><h4>Modelado 3D con plantillas</h4><p>5 modelos con plantillas homólogas del PDB. Validación idéntica. Selección del mejor modelo para MD.</p><div class="tool-tags"><span class="tool-tag">ColabFold</span><span class="tool-tag">PDB100 / Custom templates</span><span class="tool-tag">MolProbity</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body"><h4>Dinámica molecular</h4><p>Simulaciones de 500 ns. Análisis de RMSD, RMSF, radio de giro y SASA. Validación post-MD con ERRAT2.</p><div class="tool-tags"><span class="tool-tag">GROMACS</span><span class="tool-tag">AmberTools</span><span class="tool-tag">ERRAT2</span><span class="tool-tag">ff14SB</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div><div class="step-body"><h4>Predicción de epítopes B lineales</h4><p>Umbral moderado (top 50%) y alta confianza (top 20%). Comparación con IEDB.</p><div class="tool-tags"><span class="tool-tag">BepiPred 3.0</span><span class="tool-tag">IEDB</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div><div class="step-body"><h4>Predicción de epítopes B conformacionales</h4><p>Score 0.90 (moderado) y 1.50 (alta confianza). Recall ~50% y ~30% respectivamente.</p><div class="tool-tags"><span class="tool-tag">DiscoTope 3.0</span><span class="tool-tag">Ellipro</span></div></div></div>
+        <div class="method-step"><div class="step-left"><div class="step-num">7</div></div><div class="step-body"><h4>Epítopes T y docking con IgE</h4><p>HLA clase II frecuentes en Colombia. Docking con Fab de IgE humana (PDB: 7MLH). Energía libre MM/GBSA.</p><div class="tool-tags"><span class="tool-tag">NetMHCIIpan 4.0</span><span class="tool-tag">HawkDock</span><span class="tool-tag">MM/GBSA</span><span class="tool-tag">PDB: 7MLH</span></div></div></div>
       </div>
     </div>
 
     <!-- UPLOAD -->
     <div id="upload" class="section">
       <p class="section-title">Subir datos</p>
-      <p class="section-sub">Agrega nuevas proteínas caracterizadas con la metodología del III. Los archivos se organizan por tipo y proteína.</p>
-
-      <div class="upload-zone" onclick="alert('En la versión real: sube los archivos directamente a tu repositorio de GitHub en la carpeta proteins/nombre-proteina/')">
+      <p class="section-sub">Agrega nuevas proteínas caracterizadas con la metodología del III.</p>
+      <div class="upload-zone" onclick="alert('Sube los archivos directamente a tu repositorio de GitHub en la carpeta correspondiente.')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
         <p>Arrastra archivos aquí o haz clic para seleccionar</p>
-        <small>Formatos: .pdb · .fasta · .nc · .dcd · .pdf · .csv · .xlsx</small>
+        <small>Formatos: .pdb · .fasta · .nc · .csv · .pdf</small>
       </div>
-
       <div class="form-card">
         <h3>Registrar nueva proteína</h3>
         <div class="form-grid">
-          <div class="form-field">
-            <label>Nombre de la proteína</label>
-            <input type="text" placeholder="Ej: Blo t 21">
-          </div>
-          <div class="form-field">
-            <label>Tipo</label>
-            <select>
-              <option>Alérgeno natural</option>
-              <option>Proteína híbrida</option>
-              <option>Alérgeno recombinante</option>
-              <option>Mutante</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label>Especie de origen</label>
-            <input type="text" placeholder="Ej: Blomia tropicalis">
-          </div>
-          <div class="form-field">
-            <label>Número de acceso GenBank / UniProt</label>
-            <input type="text" placeholder="Ej: ABG76185.1">
-          </div>
-          <div class="form-field">
-            <label>Referencia (DOI o PMID)</label>
-            <input type="text" placeholder="Ej: 10.1016/j.jaci.2023...">
-          </div>
-          <div class="form-field">
-            <label>Notas</label>
-            <textarea placeholder="Descripción breve, observaciones relevantes..."></textarea>
-          </div>
-          <button class="submit-btn" onclick="alert('En la versión real, esto crea una entrada nueva en el repositorio de GitHub.')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-            Agregar al repositorio
-          </button>
+          <div class="form-field"><label>Nombre</label><input type="text" placeholder="Ej: Blo t 21"></div>
+          <div class="form-field"><label>Tipo</label><select><option>Alérgeno natural</option><option>Proteína híbrida</option><option>Alérgeno recombinante</option></select></div>
+          <div class="form-field"><label>Especie</label><input type="text" placeholder="Ej: Blomia tropicalis"></div>
+          <div class="form-field"><label>Acceso GenBank / UniProt</label><input type="text" placeholder="Ej: ABG76185.1"></div>
+          <div class="form-field"><label>Notas</label><textarea placeholder="Descripción breve..."></textarea></div>
+          <button class="submit-btn" onclick="alert('Agrega la entrada al array modelsData en el código y sube los archivos .pdb a GitHub.')">↓ Agregar al repositorio</button>
         </div>
       </div>
-
-      <div class="info-note">
-        Para agregar datos reales: sube los archivos a tu repositorio de GitHub en la carpeta <strong>proteins/nombre-proteina/</strong><br>
-        Luego actualiza el array <strong>epitopesData</strong> y <strong>filesData</strong> en el script de esta página.
-      </div>
-    </div>
-
-    <!-- HOW TO -->
-    <div id="howto" class="section">
-      <p class="section-title">Cómo usar esta página</p>
-      <p class="section-sub">Guía paso a paso para publicar esta base de datos en internet y agregar nuevas proteínas.</p>
-
-      <div class="howto-grid">
-        <div class="howto-card">
-          <h4>1. Crear cuenta GitHub</h4>
-          <p>Ve a github.com y crea una cuenta gratuita. GitHub te da hosting gratuito ilimitado para páginas web estáticas.</p>
-          <div class="step-code">→ github.com/signup</div>
-        </div>
-        <div class="howto-card">
-          <h4>2. Crear el repositorio</h4>
-          <p>Crea un nuevo repositorio público llamado <strong>iii-allergen-db</strong>. Activa GitHub Pages en Settings → Pages → Branch: main.</p>
-          <div class="step-code">Tu URL: usuario.github.io/iii-allergen-db</div>
-        </div>
-        <div class="howto-card">
-          <h4>3. Subir este archivo</h4>
-          <p>Sube el archivo <strong>index.html</strong> a la raíz del repositorio. GitHub lo publicará automáticamente como página web.</p>
-          <div class="step-code">Raíz/ → index.html</div>
-        </div>
-        <div class="howto-card">
-          <h4>4. Organizar archivos</h4>
-          <p>Crea carpetas para cada proteína. Sube los archivos .pdb, .fasta, .csv en la carpeta correspondiente.</p>
-          <div class="step-code">proteins/blo-t-2/model_post.pdb</div>
-        </div>
-        <div class="howto-card">
-          <h4>5. Cargar estructuras 3D</h4>
-          <p>En el código, actualiza la variable <strong>pdbFiles</strong> con la URL de tu GitHub para que el visualizador cargue los archivos .pdb.</p>
-          <div class="step-code">raw.githubusercontent.com/usuario/...</div>
-        </div>
-        <div class="howto-card">
-          <h4>6. Agregar nuevas proteínas</h4>
-          <p>Edita el array <strong>epitopesData</strong> y <strong>filesData</strong> en el script de esta página. Sigue el mismo formato para cada nueva proteína.</p>
-          <div class="step-code">{ protein: 'Blo t 21', type: 'Lineal', ... }</div>
-        </div>
-      </div>
+      <div class="info-note">Edita el array <strong>modelsData</strong> en el script para agregar métricas de nuevas proteínas.<br>Sube los archivos .pdb a GitHub y actualiza las URLs en <strong>BASE_URL</strong>.</div>
     </div>
 
   </div>
 </div>
 
 <script>
-const pageTitles = {
-  overview: 'Inicio',
-  viewer: 'Visualizador 3D',
-  epitopes: 'Epítopes',
-  files: 'Archivos',
-  methodology: 'Protocolo metodológico',
-  upload: 'Subir datos',
-  howto: 'Cómo usar'
-};
+// ── CONFIGURACIÓN ──
+// Cambia esto por tu usuario de GitHub
+const BASE_URL = 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/';
+
+const pageTitles = {overview:'Inicio',viewer:'Visualizador 3D',epitopes:'Epítopes',files:'Archivos',methodology:'Protocolo metodológico',upload:'Subir datos'};
 
 function nav(id, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1047,80 +347,192 @@ function nav(id, btn) {
   if (id === 'files') renderFiles();
 }
 
-// ── EPITOPES DATA ──
+// ── MODELOS DATA CON MÉTRICAS REALES ──
+const modelsData = {
+  blot2: {
+    name: 'Blo t 2',
+    selectedModel: 'M5CP',
+    postMD: { file: 'Blot2DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.44', good:true}, 'Clash Score': {val:'0.98', good:true}, 'Ramachandran Favoured': {val:'95.20%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Z-score (ProSA)': {val:'-4.97', good:true}, 'ERRAT2': {val:'93.578%', good:true} }},
+    SP: [
+      { id:'M1SP', file:'M1Blot2SP.pdb', label:'M1 · Sin plantilla', selected:true, metrics:{ pLDDT:{val:'89.8',good:true}, pTM:{val:'0.798',good:true}, 'Z-score':{val:'-4.85',good:true}, 'MolProbity':{val:'2.52',good:false}, 'Clash Score':{val:'19.68',good:false}, 'Ramachandran Fav.':{val:'89.29%',good:false}, 'Ram. Outliers':{val:'12',good:false}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'25/1081',good:false}, 'QMEAN':{val:'-2.73'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-201.77'} }},
+      { id:'M2SP', file:'M2Blot2SP.pdb', label:'M2 · Sin plantilla', metrics:{ pLDDT:{val:'87.3'}, pTM:{val:'0.764'}, 'Z-score':{val:'-4.42'}, 'MolProbity':{val:'2.66',good:false}, 'Clash Score':{val:'18.28',good:false}, 'Ramachandran Fav.':{val:'87.86%'}, 'Ram. Outliers':{val:'14'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'17/1081'}, 'QMEAN':{val:'-3.14'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-249.16'} }},
+      { id:'M3SP', file:'M3Blot2SP.pdb', label:'M3 · Sin plantilla', metrics:{ pLDDT:{val:'88.1'}, pTM:{val:'0.772'}, 'Z-score':{val:'-4.37'}, 'MolProbity':{val:'2.54'}, 'Clash Score':{val:'14.06'}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'15'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'24/1081'}, 'QMEAN':{val:'-3.88'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-300.97'} }},
+      { id:'M4SP', file:'M4Blot2SP.pdb', label:'M4 · Sin plantilla', metrics:{ pLDDT:{val:'87.9'}, pTM:{val:'0.775'}, 'Z-score':{val:'-4.34'}, 'MolProbity':{val:'2.35',good:true}, 'Clash Score':{val:'11.72',good:true}, 'Ramachandran Fav.':{val:'87.86%'}, 'Ram. Outliers':{val:'13'}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'29/1081'}, 'QMEAN':{val:'-3.29'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-293.28'} }},
+      { id:'M5SP', file:'M5Blot2SP.pdb', label:'M5 · Sin plantilla', metrics:{ pLDDT:{val:'88.4'}, pTM:{val:'0.778'}, 'Z-score':{val:'-4.51'}, 'MolProbity':{val:'2.63'}, 'Clash Score':{val:'35.11',good:false}, 'Ramachandran Fav.':{val:'87.86%'}, 'Ram. Outliers':{val:'15'}, 'Rotamer Out.':{val:'1'}, 'Bad Bonds':{val:'36/1081'}, 'QMEAN':{val:'-3.44'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-199.28'} }},
+    ],
+    CP: [
+      { id:'M1CP', file:'M1Blot2cp.pdb', label:'M1 · Con plantilla', metrics:{ pLDDT:{val:'86.8'}, pTM:{val:'0.772'}, 'Z-score':{val:'-4.57'}, 'MolProbity':{val:'1.70',good:true}, 'Clash Score':{val:'1.87',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.49'}, 'QMEANDisCo':{val:'0.63'}, 'EvoEF2 (kcal/mol)':{val:'-463.93'} }},
+      { id:'M2CP', file:'M2Blot2cp.pdb', label:'M2 · Con plantilla', metrics:{ pLDDT:{val:'87.1'}, pTM:{val:'0.774'}, 'Z-score':{val:'-4.49'}, 'MolProbity':{val:'1.71',good:true}, 'Clash Score':{val:'3.28',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'1'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.72'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-452.20'} }},
+      { id:'M3CP', file:'M3Blot2cp.pdb', label:'M3 · Con plantilla', metrics:{ pLDDT:{val:'87.5'}, pTM:{val:'0.777'}, 'Z-score':{val:'-4.24'}, 'MolProbity':{val:'1.66',good:true}, 'Clash Score':{val:'2.81',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'2'}, 'Rotamer Out.':{val:'1'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.37'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-457.19'} }},
+      { id:'M4CP', file:'M4Blot2cp.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'87.2'}, pTM:{val:'0.775'}, 'Z-score':{val:'-4.45'}, 'MolProbity':{val:'1.84'}, 'Clash Score':{val:'1.87',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.83'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-472.43'} }},
+      { id:'M5CP', file:'M5Blot2cp.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'86.8'}, pTM:{val:'0.774'}, 'Z-score':{val:'-4.59'}, 'MolProbity':{val:'1.71',good:true}, 'Clash Score':{val:'2.34',good:true}, 'Ramachandran Fav.':{val:'90.71%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.49'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-476.95',good:true} }},
+    ]
+  },
+  bp2: {
+    name: 'BP-2',
+    selectedModel: 'M3CP',
+    postMD: { file: 'BP2DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.46', good:true}, 'Clash Score': {val:'0.75', good:true}, 'Ramachandran Favoured': {val:'95.87%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Bad Bonds': {val:'18', good:true}, 'ERRAT2': {val:'89.593%'} }},
+    SP: [
+      { id:'M1SP', file:'M1BP-2SP.pdb', label:'M1 · Sin plantilla', metrics:{ pLDDT:{val:'82.1'}, pTM:{val:'0.616'}, 'Z-score':{val:'-4.51'}, 'MolProbity':{val:'2.53'}, 'Clash Score':{val:'38.26',good:false}, 'Ramachandran Fav.':{val:'92.59%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'1'}, 'Bad Bonds':{val:'76/2205'}, 'QMEAN':{val:'0.21'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-268.95'} }},
+      { id:'M2SP', file:'M2BP-2SP.pdb', label:'M2 · Sin plantilla', metrics:{ pLDDT:{val:'83.1'}, pTM:{val:'0.628'}, 'Z-score':{val:'-4.10'}, 'MolProbity':{val:'1.97',good:true}, 'Clash Score':{val:'14.29'}, 'Ramachandran Fav.':{val:'95.56%',good:true}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'72/2205'}, 'QMEAN':{val:'0.33'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-803.87'} }},
+      { id:'M3SP', file:'M3BP-2SP.pdb', label:'M3 · Sin plantilla', metrics:{ pLDDT:{val:'82.8'}, pTM:{val:'0.625'}, 'Z-score':{val:'-4.35'}, 'MolProbity':{val:'2.64'}, 'Clash Score':{val:'29.02',good:false}, 'Ramachandran Fav.':{val:'92.96%'}, 'Ram. Outliers':{val:'11'}, 'Rotamer Out.':{val:'5'}, 'Bad Bonds':{val:'68/2205'}, 'QMEAN':{val:'-0.75'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-604.24'} }},
+      { id:'M4SP', file:'M4BP-2SP.pdb', label:'M4 · Sin plantilla', metrics:{ pLDDT:{val:'83.5'}, pTM:{val:'0.630'}, 'Z-score':{val:'-4.34'}, 'MolProbity':{val:'2.42'}, 'Clash Score':{val:'19.11'}, 'Ramachandran Fav.':{val:'95.19%',good:true}, 'Ram. Outliers':{val:'5'}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'75/2205'}, 'QMEAN':{val:'0.47'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-778.52'} }},
+      { id:'M5SP', file:'M5BP-2SP.pdb', label:'M5 · Sin plantilla ★ mejor SP', selected:true, metrics:{ pLDDT:{val:'82.1'}, pTM:{val:'0.625'}, 'Z-score':{val:'-4.81',good:true}, 'MolProbity':{val:'2.26'}, 'Clash Score':{val:'15.88'}, 'Ramachandran Fav.':{val:'96.30%',good:true}, 'Ram. Outliers':{val:'2',good:true}, 'Rotamer Out.':{val:'5'}, 'Bad Bonds':{val:'80/2205'}, 'QMEAN':{val:'1.28',good:true}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-816.21'} }},
+    ],
+    CP: [
+      { id:'M1CP', file:'M1BP-2CP.pdb', label:'M1 · Con plantilla', metrics:{ pLDDT:{val:'83.9'}, pTM:{val:'0.600'}, 'Z-score':{val:'-3.15'}, 'MolProbity':{val:'2.19'}, 'Clash Score':{val:'18.19'}, 'Ramachandran Fav.':{val:'94.81%'}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'58'}, 'QMEAN':{val:'0.38'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-649.28'} }},
+      { id:'M2CP', file:'M2BP-2CP.pdb', label:'M2 · Con plantilla', metrics:{ pLDDT:{val:'84.5'}, pTM:{val:'0.617'}, 'Z-score':{val:'-4.46'}, 'MolProbity':{val:'1.94',good:true}, 'Clash Score':{val:'15.43'}, 'Ramachandran Fav.':{val:'94.30%'}, 'Ram. Outliers':{val:'2'}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'54'}, 'QMEAN':{val:'0.99'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-552.27'} }},
+      { id:'M3CP', file:'M3BP-2CP.pdb', label:'M3 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'84.6'}, pTM:{val:'0.616'}, 'Z-score':{val:'-6.10',good:true}, 'MolProbity':{val:'1.78',good:true}, 'Clash Score':{val:'12.84'}, 'Ramachandran Fav.':{val:'95.83%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'51'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.68',good:true}, 'EvoEF2 (kcal/mol)':{val:'-947.63',good:true} }},
+      { id:'M4CP', file:'M4BP-2CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'84.3'}, pTM:{val:'0.612'}, 'Z-score':{val:'-3.45'}, 'MolProbity':{val:'1.93',good:true}, 'Clash Score':{val:'13.82'}, 'Ramachandran Fav.':{val:'95.04%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'60'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-728.71'} }},
+      { id:'M5CP', file:'M5BP-2CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'84.9'}, pTM:{val:'0.628'}, 'Z-score':{val:'-4.10'}, 'MolProbity':{val:'2.10'}, 'Clash Score':{val:'16.58'}, 'Ramachandran Fav.':{val:'95.67%',good:true}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'4'}, 'Bad Bonds':{val:'61'}, 'QMEAN':{val:'1.31'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-851.31'} }},
+    ]
+  },
+  pf14c: {
+    name: 'PF14c',
+    selectedModel: 'M5CP',
+    postMD: { file: 'pf14cDD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.24', good:true}, 'Clash Score': {val:'—', good:true}, 'Ramachandran Favoured': {val:'88.64%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Z-score (ProSA)': {val:'-3.14', good:true}, 'ERRAT2': {val:'97.88%', good:true}, 'Bad Bonds': {val:'0', good:true} }},
+    SP: [
+      { id:'M1SP', file:'M1pf14cSP.pdb', label:'M1 · Sin plantilla', metrics:{ pLDDT:{val:'76.5'}, pTM:{val:'0.436'}, 'Z-score':{val:'-0.21'}, 'MolProbity':{val:'3.12',good:false}, 'Clash Score':{val:'13.04'}, 'Ramachandran Fav.':{val:'80.67%',good:false}, 'Ram. Outliers':{val:'18',good:false}, 'Rotamer Out.':{val:'14',good:false}, 'Bad Bonds':{val:'43/1254'}, 'QMEAN':{val:'-2.90'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-289.3'} }},
+      { id:'M2SP', file:'M2pf14cSP.pdb', label:'M2 · Sin plantilla', metrics:{ pLDDT:{val:'75.3'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.45'}, 'MolProbity':{val:'3.03',good:false}, 'Clash Score':{val:'17.93'}, 'Ramachandran Fav.':{val:'82.67%'}, 'Ram. Outliers':{val:'15'}, 'Rotamer Out.':{val:'8'}, 'Bad Bonds':{val:'46/1254'}, 'QMEAN':{val:'-2.57'}, 'QMEANDisCo':{val:'0.59'}, 'EvoEF2 (kcal/mol)':{val:'-299.3'} }},
+      { id:'M3SP', file:'M3pf14cSP.pdb', label:'M3 · Sin plantilla', metrics:{ pLDDT:{val:'74.6'}, pTM:{val:'0.438'}, 'Z-score':{val:'-1.76'}, 'MolProbity':{val:'3.03',good:false}, 'Clash Score':{val:'15.91'}, 'Ramachandran Fav.':{val:'82.00%'}, 'Ram. Outliers':{val:'16'}, 'Rotamer Out.':{val:'9'}, 'Bad Bonds':{val:'41/1254'}, 'QMEAN':{val:'-2.42'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-369.7'} }},
+      { id:'M4SP', file:'M4pf14cSP.pdb', label:'M4 · Sin plantilla ★ mejor SP', selected:true, metrics:{ pLDDT:{val:'74.7'}, pTM:{val:'0.448',good:true}, 'Z-score':{val:'-1.35'}, 'MolProbity':{val:'2.82',good:true}, 'Clash Score':{val:'7.34',good:true}, 'Ramachandran Fav.':{val:'85.33%',good:true}, 'Ram. Outliers':{val:'15'}, 'Rotamer Out.':{val:'14'}, 'Bad Bonds':{val:'70/1254'}, 'QMEAN':{val:'-2.56'}, 'QMEANDisCo':{val:'0.59'}, 'EvoEF2 (kcal/mol)':{val:'-319.54'} }},
+      { id:'M5SP', file:'M5pf14cSP.pdb', label:'M5 · Sin plantilla', metrics:{ pLDDT:{val:'74.8'}, pTM:{val:'0.442'}, 'Z-score':{val:'-1.67'}, 'MolProbity':{val:'3.06',good:false}, 'Clash Score':{val:'11.82'}, 'Ramachandran Fav.':{val:'80.00%',good:false}, 'Ram. Outliers':{val:'19',good:false}, 'Rotamer Out.':{val:'13'}, 'Bad Bonds':{val:'38/1254'}, 'QMEAN':{val:'-2.18'}, 'QMEANDisCo':{val:'0.59'}, 'EvoEF2 (kcal/mol)':{val:'-330.2'} }},
+    ],
+    CP: [
+      { id:'M1CP', file:'M1PF14cCP.pdb', label:'M1 · Con plantilla', metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.429'}, 'Z-score':{val:'-0.22'}, 'MolProbity':{val:'2.03'}, 'Clash Score':{val:'0.41',good:true}, 'Ramachandran Fav.':{val:'82.67%'}, 'Ram. Outliers':{val:'16'}, 'Rotamer Out.':{val:'11'}, 'C-Beta Dev.':{val:'4'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-3.31'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-498.36'} }},
+      { id:'M2CP', file:'M2PF14cCP.pdb', label:'M2 · Con plantilla', metrics:{ pLDDT:{val:'76.4'}, pTM:{val:'0.442'}, 'Z-score':{val:'-1.46'}, 'MolProbity':{val:'2.26'}, 'Clash Score':{val:'4.07',good:true}, 'Ramachandran Fav.':{val:'86.00%'}, 'Ram. Outliers':{val:'9'}, 'Rotamer Out.':{val:'8'}, 'C-Beta Dev.':{val:'2'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.79'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-499.55'} }},
+      { id:'M3CP', file:'M3PF14cCP.pdb', label:'M3 · Con plantilla', metrics:{ pLDDT:{val:'75.8'}, pTM:{val:'0.438'}, 'Z-score':{val:'-0.88'}, 'MolProbity':{val:'1.92',good:true}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'88.67%',good:true}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'8'}, 'C-Beta Dev.':{val:'1'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.90'}, 'QMEANDisCo':{val:'0.60'}, 'EvoEF2 (kcal/mol)':{val:'-541.04',good:true} }},
+      { id:'M4CP', file:'M4PF14cCP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'75.2'}, pTM:{val:'0.436'}, 'Z-score':{val:'-0.48'}, 'MolProbity':{val:'2.09'}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'85.33%'}, 'Ram. Outliers':{val:'12'}, 'Rotamer Out.':{val:'11'}, 'C-Beta Dev.':{val:'3'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-2.37'}, 'QMEANDisCo':{val:'0.63'}, 'EvoEF2 (kcal/mol)':{val:'-494.60'} }},
+      { id:'M5CP', file:'M5PF14cCP.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.53'}, 'MolProbity':{val:'1.75',good:true}, 'Clash Score':{val:'0.0',good:true}, 'Ramachandran Fav.':{val:'84.67%'}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'5',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.64'}, 'QMEANDisCo':{val:'0.57'}, 'EvoEF2 (kcal/mol)':{val:'-491.53'} }},
+    ]
+  }
+};
+
+// ── VIEWER ──
+let viewer3d = null;
+let currentProtein = 'blot2';
+let currentModelId = null;
+
+function loadProtein(protKey) {
+  currentProtein = protKey;
+  document.getElementById('prot-select').value = protKey;
+  renderModelTabs(protKey);
+  showMetricsEmpty();
+  document.getElementById('viewer-placeholder').style.display = 'flex';
+}
+
+function renderModelTabs(protKey) {
+  const data = modelsData[protKey];
+  const container = document.getElementById('model-tabs');
+  let html = `<button class="model-tab ${data.postMD ? 'model-tab' : ''}" onclick="selectModel('postMD','${data.postMD.file}','${data.postMD.label}','postMD')">Post-MD</button>`;
+  data.SP.forEach(m => {
+    html += `<button class="model-tab ${m.selected ? 'selected-model' : ''}" id="tab-${m.id}" onclick="selectModel('${m.id}','${m.file}','${m.label}','SP')">${m.id}</button>`;
+  });
+  data.CP.forEach(m => {
+    html += `<button class="model-tab ${m.selected ? 'selected-model' : ''}" id="tab-${m.id}" onclick="selectModel('${m.id}','${m.file}','${m.label}','CP')">${m.id}</button>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectModel(modelId, filename, label, group) {
+  currentModelId = modelId;
+  document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.getElementById('tab-'+modelId);
+  if (tab) tab.classList.add('active');
+
+  const data = modelsData[currentProtein];
+  let metrics = null;
+  if (modelId === 'postMD') {
+    metrics = data.postMD.metrics;
+  } else {
+    const allModels = [...data.SP, ...data.CP];
+    const found = allModels.find(m => m.id === modelId);
+    if (found) metrics = found.metrics;
+  }
+  if (metrics) renderMetrics(label, metrics, modelId === 'postMD');
+
+  const url = BASE_URL + filename;
+  const placeholder = document.getElementById('viewer-placeholder');
+  placeholder.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span style="font-size:12px;font-family:var(--mono)">Cargando ${filename}...</span>`;
+  placeholder.style.display = 'flex';
+
+  const viewerEl = document.getElementById('mol-viewer');
+  if (!viewer3d) viewer3d = $3Dmol.createViewer(viewerEl, {backgroundColor:'#FDFCF8'});
+  viewer3d.clear();
+
+  fetch(url)
+    .then(r => { if (!r.ok) throw new Error('No encontrado'); return r.text(); })
+    .then(pdbData => {
+      placeholder.style.display = 'none';
+      viewer3d.addModel(pdbData, 'pdb');
+      viewer3d.setStyle({}, {cartoon:{color:'spectrum'}});
+      viewer3d.zoomTo();
+      viewer3d.render();
+    })
+    .catch(() => {
+      placeholder.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg><span style="font-family:var(--mono);font-size:11px">Archivo no encontrado en GitHub.<br>Sube ${filename} al repositorio.</span>`;
+    });
+}
+
+function renderMetrics(label, metrics, isPostMD) {
+  const panel = document.getElementById('metrics-panel');
+  const badge = isPostMD ? '<span class="badge-best">post-MD</span>' : '';
+  let rows = Object.entries(metrics).map(([k,v]) =>
+    `<div class="metric-row"><span class="metric-key">${k}</span><span class="metric-val ${v.good===true?'good':v.good===false?'warn':''}">${v.val}</span></div>`
+  ).join('');
+  panel.innerHTML = `<h4>${label.split('★')[0].trim()}${badge}${label.includes('★')?'<span class="badge-selected">★ seleccionado</span>':''}</h4><div class="model-name">${currentProtein.toUpperCase()}</div>${rows}`;
+}
+
+function showMetricsEmpty() {
+  document.getElementById('metrics-panel').innerHTML = '<div style="color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;margin-top:40px;">Selecciona un modelo<br>para ver sus métricas</div>';
+}
+
+function setStyle(style) {
+  if (!viewer3d) return;
+  const styles = {cartoon:{cartoon:{color:'spectrum'}},surface:{surface:{opacity:0.8,colorscheme:'greenCarbon'}},stick:{stick:{}},sphere:{sphere:{}}};
+  viewer3d.setStyle({}, styles[style] || styles.cartoon);
+  viewer3d.render();
+}
+
+// ── EPITOPES ──
 const epitopesData = [
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'GCSGDHCTIHKGKS', region: '36-49', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'SEKNMHFQEQ', region: '59-68', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'MNGIEVPVPG', region: '70-90', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'MHFQEQKND', region: '92-101', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'PTILPNGS', region: '110-118', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Lineal', sequence: 'GYVWN', region: '125-129', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Conformacional', sequence: 'K68, G75, I76, E77, P79, 81, I112', region: 'Epítope 1', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Conformacional', sequence: 'S49, F55, E63, K64, V83, K85, G87, C88, K89, T91, P94, D104', region: 'Epítope 2', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Conformacional', sequence: 'F4, I5, A8, L9', region: 'Epítope 3', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'Conformacional', sequence: 'K29, T121, K135', region: 'Epítope 4', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'HGVVACGKVNTEVVD', region: '128-142', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'LLVSYAAAGDVKFTD', region: '9-23', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'ALLVSYAAAGDVKFT', region: '8-22', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'TASLVGDHGVVACGK', region: '121-135', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'LKTFFIANQDSEKLE', region: '52-66', hla: 'DRB1*04:07', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'KLEIKISATMNGIEV', region: '64-78', hla: 'DRB1*04:07', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'KGQKYELDYSLIIPT', region: '97-111', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'Blo t 2', type: 'T CD4+', sequence: 'LKTVTTASLVGDHGV', region: '116-130', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'QEHKPKKDDFRNEFDHLLIEQ', region: '27-47', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 5 (Cartagena, Singapur, Indonesia)' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'LYLQHQLDELNENKSKE', region: '60-76', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 5' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'EKIIRELDV', region: '79-87', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'ERELKRTDLNILERFNYEE', region: '100-118', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 5' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'KETEQKVKD', region: '131-139', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 5' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'TQDQVD', region: '142-147', hla: '-', tool: 'BepiPred 3.0', reported: 'Unión Blo t 5 / Der p 2' },
-  { protein: 'BP-2', type: 'Lineal', sequence: 'KTAKIEIKASIDGLE', region: '191-205', hla: '-', tool: 'BepiPred 3.0', reported: 'Der p 2' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'P31, K32, K33, D34, F36, R37, E39, F40, E46', region: 'Epítope 1', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'P177, L204, P209, I211, D212, P213, N214, N236, I240', region: 'Epítope 2', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'E100, R101, K104, R105, T106, D107, I110, L111, R113', region: 'Epítope 3', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'Q188, K191, T192, K194, E196, K198, M219, P222, K225, T250, L254, D256, N257, y G258', region: 'Epítope #5', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'R83, E84, D86, A90, E93, G94', region: 'Epítope 5', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'Blo t 5 (R83, D107)' },
-  { protein: 'BP-2', type: 'Conformacional', sequence: 'I14, T121, K124, I125, K128', region: 'Epítope 6', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'GKPFQLEAVFEANQN', region: '-', hla: 'DRB1*04:07', tool: 'NetMHCIIpan 4.0', reported: 'Der p 2 (modelo murino)' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'FDHLLIEQANHAIEK', region: '-', hla: 'DRB1*04:07', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'LEAVFEANQNSKTAK', region: '-', hla: 'DRB1*04:07', tool: 'NetMHCIIpan 4.0', reported: 'Der p 2 (modelo murino)' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'SKILLKDLKETEQK', region: '-', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'ILERFNYEEAQTLSK', region: '-', hla: 'DQB1*04:02', tool: 'NetMHCIIpan 4.0', reported: 'Blo t 5 (modelo murino)' },
-  { protein: 'BP-2', type: 'T CD4+', sequence: 'SENVVVTVKYLGDNG', region: '-', hla: 'DRB1*11:01', tool: 'NetMHCIIpan 4.0', reported: 'Der p 2 (modelo murino)' },
-  { protein: 'PF14c', type: 'Lineal', sequence: 'ERELKRTDLNIL', region: '38-49', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 5' },
-  { protein: 'PF14c', type: 'Lineal', sequence: 'FNYERR', region: '52-57', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'Lineal', sequence: 'EEDLER', region: '62-67', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'Lineal', sequence: 'IGDFKMTES', region: '105-113', hla: '-', tool: 'BepiPred 3.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'Lineal', sequence: 'FEGDNKFIHTEPDDHHEKPTTQCTHEET', region: '129-152', hla: '-', tool: 'BepiPred 3.0', reported: 'Blo t 12 + Blo t 13' },
-  { protein: 'PF14c', type: 'Conformacional', sequence: 'G35, L37, R39', region: 'Epítope 1', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'Conformacional', sequence: 'I105, G106, D107, F108', region: 'Epítope 2', hla: '-', tool: 'DiscoTope 3.0 + Ellipro', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'NKFIHTEPDDHHEKP', region: '-', hla: 'DQB1*02:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'EGDNKFIHTEPDDHH', region: '-', hla: 'DQB1*02:01 / DQB1*04:02', tool: 'NetMHCIIpan 4.0', reported: 'No reportado — promiscuo' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'ERRIQLEIEDLERSE', region: '-', hla: 'DQB1*02:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'EERLKIATAKLEEAS', region: '-', hla: 'DQB1*04:02', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'RLKIATAKLEEASQS', region: '-', hla: 'DQB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
-  { protein: 'PF14c', type: 'T CD4+', sequence: 'LSTFEGDNKFIHTEP', region: '-', hla: 'DRB1*03:01', tool: 'NetMHCIIpan 4.0', reported: 'No reportado' },
+  {protein:'Blo t 2',type:'Lineal',sequence:'GCSGDHCTIHKGKS',region:'36-49',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Lineal',sequence:'SEKNMHFQEQ',region:'59-68',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Lineal',sequence:'MNGIEVPVPG',region:'70-90',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Lineal',sequence:'MHFQEQKND',region:'92-101',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Lineal',sequence:'PTILPNGS',region:'110-118',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Lineal',sequence:'GYVWN',region:'125-129',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Conformacional',sequence:'K68, G75, I76, E77, P79, I112',region:'Epítope 1',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'No reportado'},
+  {protein:'Blo t 2',type:'Conformacional',sequence:'S49, F55, E63, K64, V83, K85, G87, C88, K89, T91, P94, D104',region:'Epítope 2',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'No reportado'},
+  {protein:'Blo t 2',type:'T CD4+',sequence:'HGVVACGKVNTEVVD',region:'-',hla:'DQB1*03:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'BP-2',type:'Lineal',sequence:'QEHKPKKDDFRNEFDHLLIEQ',region:'27-47',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 5 (Cartagena, Singapur, Indonesia)'},
+  {protein:'BP-2',type:'Lineal',sequence:'LYLQHQLDELNENKSKE',region:'60-76',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 5'},
+  {protein:'BP-2',type:'Lineal',sequence:'ERELKRTDLNILERFNYEE',region:'100-118',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 5'},
+  {protein:'BP-2',type:'Lineal',sequence:'KETEQKVKD',region:'131-139',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 5'},
+  {protein:'BP-2',type:'Lineal',sequence:'TQDQVD',region:'142-147',hla:'-',tool:'BepiPred 3.0',reported:'Unión Blo t 5 / Der p 2'},
+  {protein:'BP-2',type:'Lineal',sequence:'KTAKIEIKASIDGLE',region:'191-205',hla:'-',tool:'BepiPred 3.0',reported:'Der p 2'},
+  {protein:'BP-2',type:'Conformacional',sequence:'R83, E84, D86, A90, E93, G94',region:'Epítope #5',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'Blo t 5 (R83, D107)'},
+  {protein:'BP-2',type:'T CD4+',sequence:'GKPFQLEAVFEANQN',region:'-',hla:'DRB1*04:07',tool:'NetMHCIIpan 4.0',reported:'Der p 2'},
+  {protein:'BP-2',type:'T CD4+',sequence:'FDHLLIEQANHAIEK',region:'-',hla:'DRB1*04:07',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'BP-2',type:'T CD4+',sequence:'LEAVFEANQNSKTAK',region:'-',hla:'DRB1*04:07',tool:'NetMHCIIpan 4.0',reported:'Der p 2'},
+  {protein:'BP-2',type:'T CD4+',sequence:'SKILLKDLKETEQK',region:'-',hla:'DRB1*03:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'BP-2',type:'T CD4+',sequence:'ILERFNYEEAQTLSK',region:'-',hla:'DQB1*04:02',tool:'NetMHCIIpan 4.0',reported:'Blo t 5'},
+  {protein:'BP-2',type:'T CD4+',sequence:'SENVVVTVKYLGDNG',region:'-',hla:'DRB1*11:01',tool:'NetMHCIIpan 4.0',reported:'Der p 2'},
+  {protein:'PF14c',type:'Lineal',sequence:'ERELKRTDLNIL',region:'38-49',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 5'},
+  {protein:'PF14c',type:'Lineal',sequence:'FNYERR',region:'52-57',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'PF14c',type:'Lineal',sequence:'EEDLER',region:'62-67',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'PF14c',type:'Lineal',sequence:'IGDFKMTES',region:'105-113',hla:'-',tool:'BepiPred 3.0',reported:'No reportado'},
+  {protein:'PF14c',type:'Lineal',sequence:'FEGDNKFIHTEPDDHHEKPTTQCTHEET',region:'129-152',hla:'-',tool:'BepiPred 3.0',reported:'Blo t 12 + Blo t 13'},
+  {protein:'PF14c',type:'Conformacional',sequence:'G35, L37, R39',region:'Epítope 1',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'No reportado'},
+  {protein:'PF14c',type:'Conformacional',sequence:'I105, G106, D107, F108',region:'Epítope 2',hla:'-',tool:'DiscoTope 3.0 + Ellipro',reported:'No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'NKFIHTEPDDHHEKP',region:'-',hla:'DQB1*02:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'EGDNKFIHTEPDDHH',region:'-',hla:'DQB1*02:01 / DQB1*04:02',tool:'NetMHCIIpan 4.0',reported:'Promiscuo — No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'ERRIQLEIEDLERSE',region:'-',hla:'DQB1*02:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'EERLKIATAKLEEAS',region:'-',hla:'DQB1*04:02',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'RLKIATAKLEEASQS',region:'-',hla:'DQB1*03:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
+  {protein:'PF14c',type:'T CD4+',sequence:'LSTFEGDNKFIHTEP',region:'-',hla:'DRB1*03:01',tool:'NetMHCIIpan 4.0',reported:'No reportado'},
 ];
 
-// ── FILES DATA ──
-const filesData = [
-  { name: 'blo_t_2_trajectory.nc', protein: 'Blo t 2', type: 'Trayectoria MD', ext: 'nc', size: '~4 GB' },
-  { name: 'blo_t_2_epitopes_B.csv', protein: 'Blo t 2', type: 'Epítopes B', ext: 'csv', size: '~8 KB' },
-  { name: 'blo_t_2_epitopes_T.csv', protein: 'Blo t 2', type: 'Epítopes T', ext: 'csv', size: '~6 KB' },
-  { name: 'bp2_sequence.fasta', protein: 'BP-2', type: 'Secuencia', ext: 'fasta', size: '~1 KB' },
-  { name: 'bp2_pre_MD.pdb', protein: 'BP-2', type: 'Estructura pre-MD', ext: 'pdb', size: '~4.8 MB' },
-  { name: 'bp2_post_MD.pdb', protein: 'BP-2', type: 'Estructura post-MD', ext: 'pdb', size: '~4.8 MB' },
-  { name: 'bp2_trajectory.nc', protein: 'BP-2', type: 'Trayectoria MD', ext: 'nc', size: '~4 GB' },
-  { name: 'bp2_epitopes_B.csv', protein: 'BP-2', type: 'Epítopes B', ext: 'csv', size: '~12 KB' },
-  { name: 'bp2_epitopes_T.csv', protein: 'BP-2', type: 'Epítopes T', ext: 'csv', size: '~10 KB' },
-  { name: 'bp2_docking_IgE.pdb', protein: 'BP-2', type: 'Complejo IgE', ext: 'pdb', size: '~6 MB' },
-  { name: 'pf14c_sequence.fasta', protein: 'PF14c', type: 'Secuencia', ext: 'fasta', size: '~1 KB' },
-  { name: 'pf14c_pre_MD.pdb', protein: 'PF14c', type: 'Estructura pre-MD', ext: 'pdb', size: '~2.8 MB' },
-  { name: 'pf14c_post_MD.pdb', protein: 'PF14c', type: 'Estructura post-MD', ext: 'pdb', size: '~2.8 MB' },
-  { name: 'pf14c_trajectory.nc', protein: 'PF14c', type: 'Trayectoria MD', ext: 'nc', size: '~4 GB' },
-  { name: 'pf14c_epitopes_B.csv', protein: 'PF14c', type: 'Epítopes B', ext: 'csv', size: '~8 KB' },
-];
-
-// ── EPITOPES RENDER ──
 function filterEp(filter, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -1129,95 +541,70 @@ function filterEp(filter, btn) {
 
 function renderEpitopes(filter) {
   const container = document.getElementById('epitopes-container');
-  let data = epitopesData;
-  if (filter !== 'all') {
-    data = data.filter(e => e.protein === filter || e.type === filter);
-  }
+  let data = filter === 'all' ? epitopesData : epitopesData.filter(e => e.protein===filter||e.type===filter);
   const proteins = [...new Set(data.map(e => e.protein))];
   container.innerHTML = proteins.map(p => {
-    const items = data.filter(e => e.protein === p);
-    return `<div class="ep-group">
-      <div class="ep-group-title">${p}</div>
-      ${items.map(e => `
-        <div class="ep-item">
-          <span class="ep-seq ${e.type === 'Lineal' ? 'ep-linear' : e.type === 'Conformacional' ? 'ep-conf' : 'ep-t'}">${e.sequence}</span>
-          <div class="ep-meta">
-            <strong>${e.type}</strong>${e.region !== '-' ? ' · aa ' + e.region : ''}${e.hla !== '-' ? ' · ' + e.hla : ''}<br>
-            ${e.tool} · <em>${e.reported}</em>
-          </div>
-        </div>`).join('')}
-    </div>`;
+    const items = data.filter(e => e.protein===p);
+    return `<div class="ep-group"><div class="ep-group-title">${p}</div>${items.map(e=>`
+      <div class="ep-item">
+        <span class="ep-seq ${e.type==='Lineal'?'ep-linear':e.type==='Conformacional'?'ep-conf':'ep-t'}">${e.sequence}</span>
+        <div class="ep-meta"><strong>${e.type}</strong>${e.region!=='-'?' · aa '+e.region:''}${e.hla!=='-'?' · '+e.hla:''}<br>${e.tool} · <em>${e.reported}</em></div>
+      </div>`).join('')}</div>`;
   }).join('');
 }
 
-// ── FILES RENDER ──
+// ── FILES ──
+const filesData = [
+  {name:'Blot2DD.pdb',protein:'Blo t 2',type:'Post-dinámica',ext:'pdb',size:'~2.1 MB'},
+  {name:'M1Blot2SP.pdb',protein:'Blo t 2',type:'Sin plantilla M1',ext:'pdb',size:'~2.1 MB'},
+  {name:'M2Blot2SP.pdb',protein:'Blo t 2',type:'Sin plantilla M2',ext:'pdb',size:'~2.1 MB'},
+  {name:'M3Blot2SP.pdb',protein:'Blo t 2',type:'Sin plantilla M3',ext:'pdb',size:'~2.1 MB'},
+  {name:'M4Blot2SP.pdb',protein:'Blo t 2',type:'Sin plantilla M4',ext:'pdb',size:'~2.1 MB'},
+  {name:'M5Blot2SP.pdb',protein:'Blo t 2',type:'Sin plantilla M5 ★',ext:'pdb',size:'~2.1 MB'},
+  {name:'M1Blot2cp.pdb',protein:'Blo t 2',type:'Con plantilla M1',ext:'pdb',size:'~2.1 MB'},
+  {name:'M2Blot2cp.pdb',protein:'Blo t 2',type:'Con plantilla M2',ext:'pdb',size:'~2.1 MB'},
+  {name:'M3Blot2cp.pdb',protein:'Blo t 2',type:'Con plantilla M3',ext:'pdb',size:'~2.1 MB'},
+  {name:'M4Blot2cp.pdb',protein:'Blo t 2',type:'Con plantilla M4',ext:'pdb',size:'~2.1 MB'},
+  {name:'M5Blot2cp.pdb',protein:'Blo t 2',type:'Con plantilla M5 ★★',ext:'pdb',size:'~2.1 MB'},
+  {name:'BP2DD.pdb',protein:'BP-2',type:'Post-dinámica',ext:'pdb',size:'~4.8 MB'},
+  {name:'M1BP-2SP.pdb',protein:'BP-2',type:'Sin plantilla M1',ext:'pdb',size:'~4.8 MB'},
+  {name:'M2BP-2SP.pdb',protein:'BP-2',type:'Sin plantilla M2',ext:'pdb',size:'~4.8 MB'},
+  {name:'M3BP-2SP.pdb',protein:'BP-2',type:'Sin plantilla M3',ext:'pdb',size:'~4.8 MB'},
+  {name:'M4BP-2SP.pdb',protein:'BP-2',type:'Sin plantilla M4',ext:'pdb',size:'~4.8 MB'},
+  {name:'M5BP-2SP.pdb',protein:'BP-2',type:'Sin plantilla M5 ★',ext:'pdb',size:'~4.8 MB'},
+  {name:'M1BP-2CP.pdb',protein:'BP-2',type:'Con plantilla M1',ext:'pdb',size:'~4.8 MB'},
+  {name:'M2BP-2CP.pdb',protein:'BP-2',type:'Con plantilla M2',ext:'pdb',size:'~4.8 MB'},
+  {name:'M3BP-2CP.pdb',protein:'BP-2',type:'Con plantilla M3 ★★',ext:'pdb',size:'~4.8 MB'},
+  {name:'M4BP-2CP.pdb',protein:'BP-2',type:'Con plantilla M4',ext:'pdb',size:'~4.8 MB'},
+  {name:'M5BP-2CP.pdb',protein:'BP-2',type:'Con plantilla M5',ext:'pdb',size:'~4.8 MB'},
+  {name:'pf14cDD.pdb',protein:'PF14c',type:'Post-dinámica',ext:'pdb',size:'~2.8 MB'},
+  {name:'M1pf14cSP.pdb',protein:'PF14c',type:'Sin plantilla M1',ext:'pdb',size:'~2.8 MB'},
+  {name:'M2pf14cSP.pdb',protein:'PF14c',type:'Sin plantilla M2',ext:'pdb',size:'~2.8 MB'},
+  {name:'M3pf14cSP.pdb',protein:'PF14c',type:'Sin plantilla M3',ext:'pdb',size:'~2.8 MB'},
+  {name:'M4pf14cSP.pdb',protein:'PF14c',type:'Sin plantilla M4 ★',ext:'pdb',size:'~2.8 MB'},
+  {name:'M5pf14cSP.pdb',protein:'PF14c',type:'Sin plantilla M5',ext:'pdb',size:'~2.8 MB'},
+  {name:'M1PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M1',ext:'pdb',size:'~2.8 MB'},
+  {name:'M2PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M2',ext:'pdb',size:'~2.8 MB'},
+  {name:'M3PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M3',ext:'pdb',size:'~2.8 MB'},
+  {name:'M4PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M4',ext:'pdb',size:'~2.8 MB'},
+  {name:'M5PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M5 ★★',ext:'pdb',size:'~2.8 MB'},
+];
+
 function renderFiles() {
-  const iconMap = { pdb: 'PDB', fasta: 'FA', nc: 'NC', csv: 'CSV', pdf: 'PDF' };
-  const classMap = { pdb: 'icon-pdb', fasta: 'icon-fasta', nc: 'icon-nc', csv: 'icon-csv', pdf: 'icon-pdf' };
-  document.getElementById('files-grid').innerHTML = filesData.map(f => `
+  const iconMap={pdb:'PDB',fasta:'FA',nc:'NC',csv:'CSV',pdf:'PDF'};
+  const classMap={pdb:'icon-pdb',fasta:'icon-fasta',nc:'icon-nc',csv:'icon-csv'};
+  document.getElementById('files-grid').innerHTML = filesData.map(f=>`
     <div class="file-card">
-      <div class="file-icon ${classMap[f.ext] || 'icon-csv'}">${iconMap[f.ext] || f.ext.toUpperCase()}</div>
-      <div class="file-info">
-        <div class="file-name">${f.name}</div>
-        <div class="file-sub">${f.protein} · ${f.type} · ${f.size}</div>
-      </div>
-      <button class="dl-btn" onclick="alert('Sube este archivo a GitHub y actualiza el href para habilitar la descarga.')">↓</button>
+      <div class="file-icon ${classMap[f.ext]||'icon-csv'}">${iconMap[f.ext]||f.ext.toUpperCase()}</div>
+      <div class="file-info"><div class="file-name">${f.name}</div><div class="file-sub">${f.protein} · ${f.type} · ${f.size}</div></div>
+      <button class="dl-btn" onclick="window.open('${BASE_URL+f.name}')">↓</button>
     </div>`).join('');
 }
 
-// ── VIEWER ──
-let viewer3d = null;
-let currentProt = null;
-
-// IMPORTANTE: Actualiza estas URLs con las rutas reales de tus archivos en GitHub
-// Ejemplo: 'https://raw.githubusercontent.com/TU-USUARIO/iii-allergen-db/main/proteins/blo-t-2/post_MD.pdb'
-const pdbFiles = {
-  'blo-t-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/Blot2DD.pdb',
-  'bp-2': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/BP2DD.pdb',
-  'pf14c': 'https://raw.githubusercontent.com/emiliacastillob/iii-allergen-db/main/pf14cDD.pdb',
-};
-
-function selectProtein(name) {
-  document.querySelectorAll('.prot-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('btn-' + name);
-  if (btn) btn.classList.add('active');
-  currentProt = name;
-  const placeholder = document.getElementById('viewer-placeholder');
-  const viewerEl = document.getElementById('mol-viewer');
-
-  if (pdbFiles[name]) {
-    placeholder.style.display = 'none';
-    if (!viewer3d) {
-      viewer3d = $3Dmol.createViewer(viewerEl, { backgroundColor: '#FDFCF8' });
-    }
-    viewer3d.clear();
-    fetch(pdbFiles[name])
-      .then(r => r.text())
-      .then(data => {
-        viewer3d.addModel(data, 'pdb');
-        viewer3d.setStyle({}, { cartoon: { color: 'spectrum' } });
-        viewer3d.zoomTo();
-        viewer3d.render();
-      });
-  } else {
-    placeholder.style.display = 'flex';
-    placeholder.querySelector('span:last-child').textContent =
-      'Sube ' + name + '_post_MD.pdb a GitHub y actualiza pdbFiles en el código';
-  }
-}
-
-function setStyle(style) {
-  if (!viewer3d) return;
-  viewer3d.setStyle({}, style === 'cartoon' ? { cartoon: { color: 'spectrum' } } :
-    style === 'surface' ? { surface: { opacity: 0.8, colorscheme: 'greenCarbon' } } :
-    style === 'stick' ? { stick: {} } : { sphere: {} });
-  viewer3d.render();
-}
-
-function resetView() { if (viewer3d) { viewer3d.zoomTo(); viewer3d.render(); } }
-
+// Init
 renderEpitopes('all');
 renderFiles();
+loadProtein('blot2');
 </script>
 </body>
 </html>
