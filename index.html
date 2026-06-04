@@ -58,7 +58,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .about-box h3{font-family:var(--display);font-size:16px;font-weight:300;margin-bottom:10px;}
 .about-box p{font-size:13.5px;color:var(--text-muted);line-height:1.7;}
 /* VIEWER */
-.viewer-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;margin-bottom:20px;}
+.viewer-layout{display:flex;flex-direction:column;gap:16px;margin-bottom:20px;}
 .viewer-controls-top{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
 .prot-select{font-size:13px;font-family:var(--mono);padding:7px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;}
 .prot-select:focus{outline:none;border-color:var(--accent);}
@@ -74,13 +74,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 #mol-viewer{width:100%;height:100%;}
 .viewer-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;gap:10px;}
 .viewer-placeholder svg{width:48px;height:48px;opacity:.3;}
-.metrics-panel{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:18px;overflow-y:auto;max-height:480px;}
+.metrics-panel{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:18px;}
 .metrics-panel h4{font-family:var(--display);font-size:15px;font-weight:300;margin-bottom:4px;color:var(--text);}
 .metrics-panel .model-name{font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-bottom:14px;}
-.metric-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border-light);font-size:12px;}
-.metric-row:last-child{border-bottom:none;}
-.metric-key{color:var(--text-muted);font-family:var(--mono);font-size:11px;}
-.metric-val{color:var(--text);font-weight:500;font-family:var(--mono);font-size:11px;}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;}
+.metric-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 12px;border-radius:var(--radius);background:var(--bg);font-size:12px;gap:12px;}
+.metric-key{color:var(--text-muted);font-family:var(--mono);font-size:11px;flex-shrink:0;max-width:140px;}
+.metric-val{color:var(--text);font-weight:500;font-family:var(--mono);font-size:11px;text-align:right;}
 .metric-val.good{color:var(--accent);}
 .metric-val.warn{color:var(--amber);}
 .badge-selected{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;background:var(--amber-light);color:var(--amber);border-radius:99px;margin-left:6px;vertical-align:middle;}
@@ -347,7 +347,7 @@ const modelsData = {
       { id:'M4CP', file:'M4Blot2cp.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'87.2'}, pTM:{val:'0.775'}, 'Z-score':{val:'-4.45'}, 'MolProbity':{val:'1.84'}, 'Clash Score':{val:'1.87',good:true}, 'Ramachandran Fav.':{val:'88.57%'}, 'Ram. Outliers':{val:'7'}, 'Rotamer Out.':{val:'3'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.83'}, 'QMEANDisCo':{val:'0.61'}, 'EvoEF2 (kcal/mol)':{val:'-472.43'} }},
       { id:'M5CP', file:'M5Blot2cp.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'86.8'}, pTM:{val:'0.774'}, 'Z-score':{val:'-4.59'}, 'MolProbity':{val:'1.71',good:true}, 'Clash Score':{val:'2.34',good:true}, 'Ramachandran Fav.':{val:'90.71%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'2'}, 'Bad Bonds':{val:'0/1082',good:true}, 'QMEAN':{val:'-1.49'}, 'QMEANDisCo':{val:'0.62'}, 'EvoEF2 (kcal/mol)':{val:'-476.95',good:true} }},
     ],
-    docking: { id:'Docking', file:'Blot2_IgE_docking1.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'Blot2_IgE_docking1.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-38.03 kcal/mol',good:true}, 'Parches Blo t 2':{val:'3 (aa 33-41, 137-142, 8-24)'}, 'Parches IgE':{val:'4 (aa 260-274, 24-28, 92-94, 309-310)'}, 'Epítope coincidente':{val:'Sí — Parche 1a → epítope lineal 36-49 (GCSGDHCTIHKGKS)',good:true}, 'Sin coincidencia':{val:'Parches 2a y 3a'} }}
   },
   bp2: {
     name: 'BP-2',
@@ -367,7 +367,7 @@ const modelsData = {
       { id:'M4CP', file:'M4BP-2CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'84.3'}, pTM:{val:'0.612'}, 'Z-score':{val:'-3.45'}, 'MolProbity':{val:'1.93',good:true}, 'Clash Score':{val:'13.82'}, 'Ramachandran Fav.':{val:'95.04%',good:true}, 'Ram. Outliers':{val:'1',good:true}, 'Rotamer Out.':{val:'0',good:true}, 'Bad Bonds':{val:'60'}, 'QMEAN':{val:'1.20'}, 'QMEANDisCo':{val:'0.66'}, 'EvoEF2 (kcal/mol)':{val:'-728.71'} }},
       { id:'M5CP', file:'M5BP-2CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'84.9'}, pTM:{val:'0.628'}, 'Z-score':{val:'-4.10'}, 'MolProbity':{val:'2.10'}, 'Clash Score':{val:'16.58'}, 'Ramachandran Fav.':{val:'95.67%',good:true}, 'Ram. Outliers':{val:'4'}, 'Rotamer Out.':{val:'4'}, 'Bad Bonds':{val:'61'}, 'QMEAN':{val:'1.31'}, 'QMEANDisCo':{val:'0.67'}, 'EvoEF2 (kcal/mol)':{val:'-851.31'} }},
     ],
-    docking: { id:'Docking', file:'BP2_IgE_docking1.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'BP2_IgE_docking1.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-22.9 kcal/mol',good:true}, 'Parches BP-2':{val:'3 (aa 40-47, 84-98, 206-214)'}, 'Parches IgE':{val:'3 (aa 8-22, 106-109, 194-199)'}, 'Parche 1a → epítope':{val:'Sí — epítope lineal 27-47 (QEHKPKKDDFRNEFDHLLIEQ)',good:true}, 'Parche 2a → epítope':{val:'Sí — epítope conformacional #5 (R83,E84,D86,A90,E93,G94)',good:true}, 'Parche 3a → epítope':{val:'Sí — epítope conformacional #2',good:true} }}
   },
   pf14c: {
     name: 'PF14c',
@@ -387,7 +387,7 @@ const modelsData = {
       { id:'M4CP', file:'M4PF14cCP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'75.2'}, pTM:{val:'0.436'}, 'Z-score':{val:'-0.48'}, 'MolProbity':{val:'2.09'}, 'Clash Score':{val:'0.81',good:true}, 'Ramachandran Fav.':{val:'85.33%'}, 'Ram. Outliers':{val:'12'}, 'Rotamer Out.':{val:'11'}, 'C-Beta Dev.':{val:'3'}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-2.37'}, 'QMEANDisCo':{val:'0.63'}, 'EvoEF2 (kcal/mol)':{val:'-494.60'} }},
       { id:'M5CP', file:'M5PF14cCP.pdb', label:'M5 · Con plantilla ★ SELECCIONADO', selected:true, metrics:{ pLDDT:{val:'74.4'}, pTM:{val:'0.440'}, 'Z-score':{val:'-1.53'}, 'MolProbity':{val:'1.75',good:true}, 'Clash Score':{val:'0.0',good:true}, 'Ramachandran Fav.':{val:'84.67%'}, 'Ram. Outliers':{val:'10'}, 'Rotamer Out.':{val:'5',good:true}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'0/1255',good:true}, 'QMEAN':{val:'-1.64'}, 'QMEANDisCo':{val:'0.57'}, 'EvoEF2 (kcal/mol)':{val:'-491.53'} }},
     ],
-    docking: { id:'Docking', file:'PF14c_IgE_docking1.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'PF14c_IgE_docking1.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-56.33 kcal/mol',good:true}, 'Parches PF14c':{val:'4 (aa 135-141, 99-101, R120, 62-74)'}, 'Parches IgE':{val:'5 (aa 263-266, 232-237, 280-287, 212-217, 404-413)'}, 'Parche 1a → epítope':{val:'Sí — epítope lineal 129-152 (FEGDNKFIHTEPDDHHEKPTTQCTHEET)',good:true}, 'Parche 4a → epítope':{val:'Sí — epítope lineal 62-67 (EEDLER)',good:true}, 'Sin coincidencia':{val:'Parches 2a y 3a'} }}
   },
   blot5: {
     name: 'Blo t 5',
@@ -407,7 +407,7 @@ const modelsData = {
       { id:'M4CP', file:'M4BT5CP.pdb', label:'M4 · Con plantilla', metrics:{ pLDDT:{val:'66.7'}, pTM:{val:'0.479'}, 'Z-score':{val:'-4.68',good:true}, 'MolProbity':{val:'2.85',good:false}, 'Clash Score':{val:'21.68',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'8'}, 'Rotamer Out.':{val:'5'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'26/1110'}, 'QMEANDisCo':{val:'0.65'}, 'QMEAN':{val:'-1.39'}, 'EvoEF2 (kcal/mol)':{val:'-429.02'} }},
       { id:'M5CP', file:'M5BT5CP.pdb', label:'M5 · Con plantilla', metrics:{ pLDDT:{val:'57.6'}, pTM:{val:'0.405'}, 'Z-score':{val:'-4.35',good:true}, 'MolProbity':{val:'3.08',good:false}, 'Clash Score':{val:'20.33',good:false}, 'Ramachandran Fav.':{val:'90.15%'}, 'Ram. Outliers':{val:'6'}, 'Rotamer Out.':{val:'11',good:false}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'23/1110'}, 'QMEANDisCo':{val:'0.62'}, 'QMEAN':{val:'-1.82'}, 'EvoEF2 (kcal/mol)':{val:'-383.70'} }},
     ],
-    docking: { id:'Docking', file:'Blot5_IgE_docking1.pdb', label:'Complejo Blo t 5 · IgE', images:['Blot5docking.png','Blot5dockingback.png','Blot5dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'≤ -11 kcal/mol',good:true}, 'Interacción IgE':{val:'Alta afinidad',good:true}, 'Parches identificados':{val:'3'}, 'Epítopes coincidentes':{val:'Sí',good:true} }}
+    docking: { id:'Docking', file:'Blot5_IgE_docking1.pdb', label:'Complejo Blo t 5 · IgE', images:['Blot5docking.png','Blot5dockingback.png','Blot5dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-31.69 kcal/mol',good:true}, 'Parches Blo t 5':{val:'3 (aa 70-78, 29-52, 81-89)'}, 'Parches IgE':{val:'5 (aa 3-12, 252-254, 141-149, 99-102, 290-302)'}, 'Parche 1a (aa 70-78)':{val:'No coincide con epítopes predichos'}, 'Parche 2a (aa 29-52)':{val:'Sí — epítope lineal 18-38 (QEHKPKKDDFRNEFDHLLIEQ)',good:true}, 'Parche 3a (aa 81-89)':{val:'Sí — epítope lineal 88-106',good:true} }}
   }
 };
 
@@ -499,7 +499,7 @@ function selectDocking(protKey) {
   let metricRows = Object.entries(d.metrics).map(([k,v]) =>
     `<div class="metric-row"><span class="metric-key">${k}</span><span class="metric-val ${v.good?'good':''}">${v.val}</span></div>`
   ).join('');
-  panel.innerHTML = `<h4>${d.label}</h4><div class="model-name" style="margin-bottom:12px;">Interacción con IgE humana (PDB: 7MLH)</div>${metricRows}<div style="margin-top:14px;font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-bottom:8px;">VISTAS DEL COMPLEJO</div>${imgHtml}`;
+  panel.innerHTML = `<h4>${d.label}</h4><div class="model-name" style="margin-bottom:12px;">Interacción con IgE humana (PDB: 7MLH) · MM/GBSA</div><div class="metrics-grid">${metricRows}</div><div style="margin-top:16px;font-size:11px;font-family:var(--mono);color:var(--text-faint);margin-bottom:8px;">VISTAS DEL COMPLEJO</div>${imgHtml}`;
 
   // Load docking PDB in viewer
   const placeholder = document.getElementById('viewer-placeholder');
@@ -530,7 +530,7 @@ function renderMetrics(label, metrics, isPostMD) {
   let rows = Object.entries(metrics).map(([k,v]) =>
     `<div class="metric-row"><span class="metric-key">${k}</span><span class="metric-val ${v.good===true?'good':v.good===false?'warn':''}">${v.val}</span></div>`
   ).join('');
-  panel.innerHTML = `<h4>${label.split('★')[0].trim()}${badge}${label.includes('★')?'<span class="badge-selected">★ seleccionado</span>':''}</h4><div class="model-name">${currentProtein.toUpperCase()}</div>${rows}`;
+  panel.innerHTML = `<h4>${label.split('★')[0].trim()}${badge}${label.includes('★')?'<span class="badge-selected">★ seleccionado</span>':''}</h4><div class="model-name">${currentProtein.toUpperCase()}</div><div class="metrics-grid">${rows}</div>`;
 }
 
 function showMetricsEmpty() {
