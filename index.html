@@ -124,7 +124,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .step-body h4{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
 .step-body p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:8px;}
 .tool-tags{display:flex;flex-wrap:wrap;gap:6px;}
-.tool-tag{font-size:10.5px;font-family:var(--mono);padding:3px 8px;border-radius:var(--radius);background:var(--bg);color:var(--text-muted);border:1px solid var(--border-light);}
+.tool-tag{font-size:10.5px;font-family:var(--mono);padding:3px 8px;border-radius:var(--radius);background:var(--bg);color:var(--text-muted);border:1px solid var(--border-light);text-decoration:none;display:inline-block;transition:all .15s;} a.tool-tag:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
 
 .section-title{font-family:var(--display);font-size:22px;font-weight:300;color:var(--text);margin-bottom:6px;}
 .section-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.6;}
@@ -324,20 +324,127 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
     <!-- METHODOLOGY -->
     <div id="methodology" class="section">
       <p class="section-title">Protocolo metodológico</p>
-      <p class="section-sub">Ruta replicable de 7 pasos para la caracterización estructural y antigénica de nuevas proteínas alergénicas.</p>
+      <p class="section-sub">Ruta completa de 11 pasos para la caracterización estructural y antigénica de proteínas recombinantes e híbridas derivadas de ácaros del polvo doméstico.</p>
       <div class="method-list">
-        <div class="method-step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body"><h4>Secuencia y PTMs</h4><p>Obtención de la secuencia FASTA. Predicción de modificaciones post-traduccionales y puentes disulfuro.</p><div class="tool-tags"><span class="tool-tag">MusiteDeep</span><span class="tool-tag">Disulfide by Design 2.0</span><span class="tool-tag">Protscale</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body"><h4>Modelado 3D sin plantillas</h4><p>5 modelos template-free. Validación con MolProbity, ProSA, QMEAN y EvoEF2. Selección del mejor modelo.</p><div class="tool-tags"><span class="tool-tag">ColabFold</span><span class="tool-tag">SWISS-MODEL</span><span class="tool-tag">ProSA-web</span><span class="tool-tag">EvoEF2</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body"><h4>Modelado 3D con plantillas</h4><p>5 modelos con plantillas homólogas del PDB. Validación idéntica. Selección del mejor modelo para MD.</p><div class="tool-tags"><span class="tool-tag">ColabFold</span><span class="tool-tag">PDB100 / Custom templates</span><span class="tool-tag">MolProbity</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body"><h4>Dinámica molecular</h4><p>Simulaciones de 500 ns. Análisis de RMSD, RMSF, radio de giro y SASA. Validación post-MD con ERRAT2.</p><div class="tool-tags"><span class="tool-tag">GROMACS</span><span class="tool-tag">AmberTools</span><span class="tool-tag">ERRAT2</span><span class="tool-tag">ff14SB</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div><div class="step-body"><h4>Predicción de epítopes B lineales</h4><p>Umbral moderado (top 50%) y alta confianza (top 20%). Comparación con IEDB.</p><div class="tool-tags"><span class="tool-tag">BepiPred 3.0</span><span class="tool-tag">IEDB</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div><div class="step-body"><h4>Predicción de epítopes B conformacionales</h4><p>Score 0.90 (moderado) y 1.50 (alta confianza). Recall ~50% y ~30% respectivamente.</p><div class="tool-tags"><span class="tool-tag">DiscoTope 3.0</span><span class="tool-tag">Ellipro</span></div></div></div>
-        <div class="method-step"><div class="step-left"><div class="step-num">7</div></div><div class="step-body"><h4>Epítopes T y docking con IgE</h4><p>HLA clase II frecuentes en Colombia. Docking con Fab de IgE humana (PDB: 7MLH). Energía libre MM/GBSA.</p><div class="tool-tags"><span class="tool-tag">NetMHCIIpan 4.0</span><span class="tool-tag">HawkDock</span><span class="tool-tag">MM/GBSA</span><span class="tool-tag">PDB: 7MLH</span></div></div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Búsqueda bibliográfica de epítopes reportados</h4>
+          <p>Búsqueda en bases de datos científicas de epítopes B y T experimentales reportados para los alérgenos constituyentes de cada proteína. Los epítopes identificados se alinearon con las secuencias de las proteínas estudiadas usando Clustal Omega para identificar regiones compartidas.</p>
+          <div class="tool-tags">
+            <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" class="tool-tag">PubMed</a>
+            <a href="https://www.sciencedirect.com/" target="_blank" class="tool-tag">ScienceDirect</a>
+            <a href="https://www.iedb.org/" target="_blank" class="tool-tag">IEDB</a>
+            <a href="https://scholar.google.com/" target="_blank" class="tool-tag">Google Scholar</a>
+            <a href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo" target="_blank" class="tool-tag">Clustal Omega</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Búsqueda de homología</h4>
+          <p>Búsqueda de homología de las secuencias mediante BLASTp. Se seleccionaron proteínas con valores E más bajos e identidad >40%. Los resultados se usaron para identificar proteínas relacionadas estructural o funcionalmente y seleccionar plantillas para el modelado 3D.</p>
+          <div class="tool-tags">
+            <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank" class="tool-tag">BLASTp — NCBI</a>
+            <a href="https://www.uniprot.org/" target="_blank" class="tool-tag">UniProt</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de modificaciones post-traduccionales (PTMs)</h4>
+          <p>Predicción de PTMs a partir de las secuencias FASTA con MusiteDeep (umbral 0.5): fosforilación, glicosilación, ubiquitinación, acetilación, metilación y otras (13 tipos). Predicción de puentes disulfuro con DbD2 usando los archivos PDB post-dinámica de cada proteína.</p>
+          <div class="tool-tags">
+            <a href="https://www.musite.net/" target="_blank" class="tool-tag">MusiteDeep</a>
+            <a href="http://cptweb.cpt.wayne.edu/DbD2/index.php" target="_blank" class="tool-tag">Disulfide by Design 2.0</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de estructura 3D — Sin plantillas</h4>
+          <p>Generación de 5 modelos con ColabFold usando template_mode="NONE". La predicción depende de la secuencia primaria y los alineamientos múltiples de secuencia (MSA via MMseqs2). 6 ciclos de reciclado. Evaluación inicial con pLDDT, PAE y pTM. Visualización en UCSF Chimera.</p>
+          <div class="tool-tags">
+            <a href="https://colabfold.mmseqs.com/" target="_blank" class="tool-tag">ColabFold</a>
+            <a href="https://www.cgl.ucsf.edu/chimera/" target="_blank" class="tool-tag">UCSF Chimera</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de estructura 3D — Con plantillas</h4>
+          <p>Para Blo t 2 y Blo t 5: opción PDB100 (selección automática de plantillas). Para BP-2 y PF14c: CUSTOM templates (carga manual de estructuras de cada alérgeno componente), dado su carácter híbrido y ausencia de homólogos directos. 5 modelos por proteína, 6 ciclos de reciclado.</p>
+          <div class="tool-tags">
+            <a href="https://colabfold.mmseqs.com/" target="_blank" class="tool-tag">ColabFold — PDB100</a>
+            <a href="https://colabfold.mmseqs.com/" target="_blank" class="tool-tag">ColabFold — Custom Templates</a>
+            <a href="https://www.cgl.ucsf.edu/chimera/" target="_blank" class="tool-tag">UCSF Chimera</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Validación estructural y selección del mejor modelo</h4>
+          <p>Evaluación estereoquímica con SWISS-MODEL/Structure Assessment: QMEAN, MolProbity Score, Clash Score, Ramachandran plot, Rotamer Outliers, C-Beta Deviations, Bad Bonds. Energía global con ProSA-web (Z-score). Estabilidad intrínseca con EvoEF2. Prioridad de criterios: alta → MolProbity, Clash Score, Ramachandran; media → QMEAN, Z-score; baja → C-beta, ángulos no favorecidos.</p>
+          <div class="tool-tags">
+            <a href="https://swissmodel.expasy.org/assess" target="_blank" class="tool-tag">SWISS-MODEL Structure Assessment</a>
+            <a href="https://prosa.services.came.sbg.ac.at/prosa.php" target="_blank" class="tool-tag">ProSA-web</a>
+            <a href="https://neurosnap.ai/service/EvoEF2" target="_blank" class="tool-tag">NeuroSnap — EvoEF2</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">7</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Dinámica molecular</h4>
+          <p>Simulaciones con AmberTools 16, campo de fuerza ff14SB, caja de agua TIP3P, iones Na⁺/Cl⁻ para neutralizar carga. Etapas: minimización energética → equilibrio → producción (500 ns). Análisis de trayectoria con CPPTRAJ: RMSD (estabilidad global), RMSF (flexibilidad regional), Radio de Giro — Rg (compactación) y SASA (exposición al solvente). Graficación con XMGRACE.</p>
+          <div class="tool-tags">
+            <a href="https://ambermd.org/" target="_blank" class="tool-tag">AmberTools 16</a>
+            <a href="https://ambermd.org/doc12/Amber20.pdf" target="_blank" class="tool-tag">CPPTRAJ</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">8</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Validación post-dinámica y descripción estructural</h4>
+          <p>Validación del modelo post-MD con las mismas herramientas de validación (paso 6) más ERRAT2. Descripción de estructura secundaria con PDBsum1. Superposición estructural pre/post-MD con MatchMaker de UCSF Chimera para calcular RMSD global e identificar cambios conformacionales inducidos por la simulación.</p>
+          <div class="tool-tags">
+            <a href="https://saves.mbi.ucla.edu/" target="_blank" class="tool-tag">ERRAT2</a>
+            <a href="https://www.ebi.ac.uk/thornton-srv/software/PDBsum1/" target="_blank" class="tool-tag">PDBsum1</a>
+            <a href="https://swissmodel.expasy.org/assess" target="_blank" class="tool-tag">SWISS-MODEL Structure Assessment</a>
+            <a href="https://www.cgl.ucsf.edu/chimera/" target="_blank" class="tool-tag">UCSF Chimera — MatchMaker</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">9</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de epítopes B lineales</h4>
+          <p>BepiPred 3.0 con secuencias FASTA. Dos umbrales: top 20% (alta confianza) y top 50% (confianza moderada). Umbral de predicción de residuos: 0.1512 (valor predeterminado). Comparación de predicciones con epítopes experimentales reportados en IEDB para validar el umbral óptimo.</p>
+          <div class="tool-tags">
+            <a href="https://services.healthtech.dtu.dk/services/BepiPred-3.0/" target="_blank" class="tool-tag">BepiPred 3.0</a>
+            <a href="https://www.iedb.org/" target="_blank" class="tool-tag">IEDB</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">10</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de epítopes B conformacionales</h4>
+          <p>DiscoTope 3.0 con archivos PDB (opción: estructuras predichas por AlphaFold). Umbrales: 0.90 (confianza moderada, recall ~50%) y 1.50 (alta confianza, recall ~30%). Herramienta complementaria Ellipro: minimum score 0.6, maximum distance 6 Å. Residuos candidatos agrupados en parches espaciales por distancias adyacentes (6 Å).</p>
+          <div class="tool-tags">
+            <a href="https://services.healthtech.dtu.dk/services/DiscoTope-3.0/" target="_blank" class="tool-tag">DiscoTope 3.0</a>
+            <a href="https://tools.iedb.org/ellipro/" target="_blank" class="tool-tag">Ellipro — IEDB</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">11</div><div class="step-line"></div></div><div class="step-body">
+          <h4>Predicción de epítopes T CD4+</h4>
+          <p>NetMHCIIpan 4.0 con secuencias FASTA. Péptidos de 15 aminoácidos. Alelos HLA clase II frecuentes en población colombiana (HLA-DR, HLA-DQ). Clasificación: Strong binder (%Rank ≤1%) y Weak binder (%Rank ≤5%). Criterio principal: %Rank (valor más bajo = mayor afinidad de unión al MHC II).</p>
+          <div class="tool-tags">
+            <a href="https://services.healthtech.dtu.dk/services/NetMHCIIpan-4.0/" target="_blank" class="tool-tag">NetMHCIIpan 4.0</a>
+            <a href="https://www.iedb.org/" target="_blank" class="tool-tag">IEDB</a>
+          </div>
+        </div></div>
+
+        <div class="method-step"><div class="step-left"><div class="step-num">12</div></div><div class="step-body">
+          <h4>Docking molecular con IgE humana</h4>
+          <p>Acoplamiento proteína–proteína con la región Fab de IgE humana (PDB: 7MLH) usando HawkDock. Selección del modelo con mejor puntuación de acoplamiento (valor más negativo). Cálculo de energía libre de unión por MM/GBSA. Identificación y agrupación manual de residuos con contribuciones más favorables en parches espaciales. Criterio de alta afinidad: KD ≤ 10⁻⁸ M (ΔG ≤ -11 kcal/mol).</p>
+          <div class="tool-tags">
+            <a href="https://cadd.zju.edu.cn/hawkdock/" target="_blank" class="tool-tag">HawkDock</a>
+            <a href="https://www.rcsb.org/structure/7MLH" target="_blank" class="tool-tag">PDB: 7MLH</a>
+            <a href="https://www.cgl.ucsf.edu/chimera/" target="_blank" class="tool-tag">UCSF Chimera</a>
+          </div>
+        </div></div>
+
       </div>
     </div>
-
-
-  </div>
 </div>
 
 <script>
