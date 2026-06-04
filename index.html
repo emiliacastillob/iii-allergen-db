@@ -153,6 +153,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .seq-actions{display:flex;gap:8px;margin-top:8px;}
 .seq-btn{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer;transition:all .15s;}
 .seq-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* CONFORMACIONAL IMAGES */
+.conf-img-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.conf-img-grid.single{grid-template-columns:1fr;}
+.conf-img-wrap{position:relative;}
+.conf-img-wrap img{width:100%;border-radius:var(--radius);border:1px solid var(--border-light);cursor:zoom-in;transition:transform .15s;}
+.conf-img-wrap img:hover{transform:scale(1.02);}
+.conf-img-caption{font-size:10px;font-family:var(--mono);color:var(--text-faint);margin-top:3px;text-align:center;}
 </style>
 </head>
 <body>
@@ -685,17 +693,38 @@ function filterEp(filter, btn) {
   renderEpitopes(filter);
 }
 
+const confImages = {
+  'Blo t 2': ['Blot2conformacionales.png','Blot2 conformacionalesback.png'],
+  'BP-2': ['BP2 conformacionales.png','BP2 conformacionales 1.png','BP2 conformacionales 2.png'],
+  'PF14c': ['PF14c conformacionales.png','PF14c conformacionales 1.png'],
+  'Blo t 5': ['Blot5conformacionales.png','Blot5conformacionalesback.png'],
+};
+
 function renderEpitopes(filter) {
   const container = document.getElementById('epitopes-container');
   let data = filter === 'all' ? epitopesData : epitopesData.filter(e => e.protein===filter||e.type===filter);
   const proteins = [...new Set(data.map(e => e.protein))];
   container.innerHTML = proteins.map(p => {
     const items = data.filter(e => e.protein===p);
+    const hasConf = items.some(e => e.type==='Conformacional');
+    const imgs = confImages[p] || [];
+    const showImgs = hasConf && imgs.length > 0 && (filter==='all'||filter===p||filter==='Conformacional');
+    const imgHtml = showImgs ? `
+      <div style="margin-top:12px;margin-bottom:4px;font-size:11px;font-family:var(--mono);color:var(--text-faint);">EPÍTOPES CONFORMACIONALES — VISTAS 3D</div>
+      <div class="conf-img-grid ${imgs.length===1?'single':''}">
+        ${imgs.map((img,i) => `
+          <div class="conf-img-wrap">
+            <img src="${BASE_URL+encodeURIComponent(img)}" alt="${img}"
+              onclick="openLightbox('${BASE_URL+encodeURIComponent(img)}','${img.replace(/\.png/,'')}',${i},'__conf_${p.replace(/\s/g,'_')}')"
+              onerror="this.parentElement.style.display='none'">
+            <div class="conf-img-caption">🔍 ${img.replace('.png','')}</div>
+          </div>`).join('')}
+      </div>` : '';
     return `<div class="ep-group"><div class="ep-group-title">${p}</div>${items.map(e=>`
       <div class="ep-item">
         <span class="ep-seq ${e.type==='Lineal'?'ep-linear':e.type==='Conformacional'?'ep-conf':'ep-t'}">${e.sequence}</span>
         <div class="ep-meta"><strong>${e.type}</strong>${e.region!=='-'?' · aa '+e.region:''}${e.hla!=='-'?' · '+e.hla:''}<br>${e.tool} · <em>${e.reported}</em></div>
-      </div>`).join('')}</div>`;
+      </div>`).join('')}${imgHtml}</div>`;
   }).join('');
 }
 
@@ -767,6 +796,16 @@ const filesData = [
   {name:'Blot5docking.png',protein:'Blo t 5',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'Blot5dockingback.png',protein:'Blo t 5',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'Blot5dockingside.png',protein:'Blo t 5',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  // Epítopes conformacionales
+  {name:'Blot2conformacionales.png',protein:'Blo t 2',type:'Epítopes conformacionales',ext:'png',size:'~1 MB'},
+  {name:'Blot2 conformacionalesback.png',protein:'Blo t 2',type:'Epítopes conformacionales (back)',ext:'png',size:'~1 MB'},
+  {name:'BP2 conformacionales.png',protein:'BP-2',type:'Epítopes conformacionales',ext:'png',size:'~1 MB'},
+  {name:'BP2 conformacionales 1.png',protein:'BP-2',type:'Epítopes conformacionales 2',ext:'png',size:'~1 MB'},
+  {name:'BP2 conformacionales 2.png',protein:'BP-2',type:'Epítopes conformacionales 3',ext:'png',size:'~1 MB'},
+  {name:'PF14c conformacionales.png',protein:'PF14c',type:'Epítopes conformacionales',ext:'png',size:'~1 MB'},
+  {name:'PF14c conformacionales 1.png',protein:'PF14c',type:'Epítopes conformacionales 2',ext:'png',size:'~1 MB'},
+  {name:'Blot5conformacionales.png',protein:'Blo t 5',type:'Epítopes conformacionales',ext:'png',size:'~1 MB'},
+  {name:'Blot5conformacionalesback.png',protein:'Blo t 5',type:'Epítopes conformacionales (back)',ext:'png',size:'~1 MB'},
 ];
 
 function renderFiles() {
@@ -802,10 +841,18 @@ let lightboxProtKey = '';
 function openLightbox(src, caption, index, protKey) {
   lightboxProtKey = protKey;
   lightboxIndex = index;
-  lightboxImages = modelsData[protKey].docking.images.map(img => ({
-    src: BASE_URL + img,
-    caption: img.replace('.png','').replace('.jpg','')
-  }));
+  if (protKey.startsWith('__conf_')) {
+    const pName = protKey.replace('__conf_','').replace(/_/g,' ');
+    lightboxImages = (confImages[pName]||[]).map(img => ({
+      src: BASE_URL + encodeURIComponent(img),
+      caption: img.replace('.png','')
+    }));
+  } else {
+    lightboxImages = modelsData[protKey].docking.images.map(img => ({
+      src: BASE_URL + img,
+      caption: img.replace('.png','').replace('.jpg','')
+    }));
+  }
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox-caption').textContent = caption;
   document.getElementById('lightbox').classList.add('open');
