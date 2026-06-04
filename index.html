@@ -142,6 +142,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .lightbox-next{right:20px;}
 .docking-img{cursor:zoom-in;transition:transform 0.15s,box-shadow 0.15s;}
 .docking-img:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+
+/* SEQUENCE PANEL */
+.seq-panel{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:16px 18px;margin-top:12px;}
+.seq-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.seq-header h4{font-size:13px;font-weight:500;color:var(--text);font-family:var(--mono);}
+.seq-header span{font-size:11px;color:var(--text-faint);font-family:var(--mono);}
+.seq-box{font-family:var(--mono);font-size:11px;color:var(--text-muted);background:var(--bg);border:1px solid var(--border-light);border-radius:var(--radius);padding:10px 12px;line-height:2;word-break:break-all;max-height:120px;overflow-y:auto;letter-spacing:0.05em;}
+.seq-box span{display:inline-block;width:1em;text-align:center;}
+.seq-actions{display:flex;gap:8px;margin-top:8px;}
+.seq-btn{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer;transition:all .15s;}
+.seq-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
 </style>
 </head>
 <body>
@@ -260,6 +271,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
             </div>
           </div>
           <div class="viewer-hint">Rotar: clic + arrastrar · Zoom: rueda · Trasladar: clic derecho + arrastrar</div>
+      <div class="seq-panel" id="seq-panel" style="display:none;">
+        <div class="seq-header">
+          <h4 id="seq-prot-name">Secuencia</h4>
+          <span id="seq-length"></span>
+        </div>
+        <div class="seq-box" id="seq-box"></div>
+        <div class="seq-actions">
+          <button class="seq-btn" onclick="copySequence()">📋 Copiar</button>
+          <button class="seq-btn" id="seq-dl-btn">⬇ Descargar FASTA</button>
+        </div>
+      </div>
         </div>
         <div class="metrics-panel" id="metrics-panel">
           <div style="color:var(--text-faint);font-family:var(--mono);font-size:12px;text-align:center;margin-top:40px;">Selecciona un modelo<br>para ver sus métricas</div>
@@ -330,6 +352,9 @@ function nav(id, btn) {
 // ── MODELOS DATA CON MÉTRICAS REALES ──
 const modelsData = {
   blot2: {
+    fasta: 'Blot2.fasta',
+    sequence: 'MFKFICLALLVSYAAAGDVKFTDCAHGEVTSLDLSGCSGDHCTIHKGKSFTLKTFFIANQDSEKLEIKISATMNGIEVPVPGVDKDGCKHTTCPLKKGQKYELDYSLIIPTILPNLKTVTTASLVGDHGVVACGKVNTEVVD',
+    length: 143,
     name: 'Blo t 2',
     selectedModel: 'M5CP',
     postMD: { file: 'Blot2DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.44', good:true}, 'Clash Score': {val:'0.98', good:true}, 'Ramachandran Favoured': {val:'95.20%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Z-score (ProSA)': {val:'-4.97', good:true}, 'ERRAT2': {val:'93.578%', good:true} }},
@@ -350,6 +375,9 @@ const modelsData = {
     docking: { id:'Docking', file:'Blot2_IgE_docking1.pdb', label:'Complejo Blo t 2 · IgE', images:['Blot2docking.png','Blot2dockingback.png','Blot2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-38.03 kcal/mol',good:true}, 'Parches Blo t 2':{val:'3 (aa 33-41, 137-142, 8-24)'}, 'Parches IgE':{val:'4 (aa 260-274, 24-28, 92-94, 309-310)'}, 'Epítope coincidente':{val:'Sí — Parche 1a → epítope lineal 36-49 (GCSGDHCTIHKGKS)',good:true}, 'Sin coincidencia':{val:'Parches 2a y 3a'} }}
   },
   bp2: {
+    fasta: 'BP-2.fasta',
+    sequence: 'MAHHHHHHVMKFAIVLIACFAASVLAQEHKPKKDDFRNEFDHLLIEQANHAIEKGEHQLLYLQHQLDELNENKSKELQEKIIRELDVVCAMIEGAQGALERELKRTDLNILERFNYEEAQTLSKILLKDLKETEQKVKDIQTQDQVDVKDCANHEIKKVLVPGCHGSEPCIIHRGKPFQLEAVFEANQNSKTAKIEIKASIDGLEVDVPGIDPNACHYMKCPLVKGQQYDIKYTWNVPKIAPKSENVVVTVKVLGDNGVLACAIATHAKIRD',
+    length: 272,
     name: 'BP-2',
     selectedModel: 'M3CP',
     postMD: { file: 'BP2DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.46', good:true}, 'Clash Score': {val:'0.75', good:true}, 'Ramachandran Favoured': {val:'95.87%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Bad Bonds': {val:'18', good:true}, 'ERRAT2': {val:'89.593%'} }},
@@ -370,6 +398,9 @@ const modelsData = {
     docking: { id:'Docking', file:'BP2_IgE_docking1.pdb', label:'Complejo BP-2 · IgE', images:['BP2docking.png','BP2dockingback.png','BP2dockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-22.9 kcal/mol',good:true}, 'Parches BP-2':{val:'3 (aa 40-47, 84-98, 206-214)'}, 'Parches IgE':{val:'3 (aa 8-22, 106-109, 194-199)'}, 'Parche 1a → epítope':{val:'Sí — epítope lineal 27-47 (QEHKPKKDDFRNEFDHLLIEQ)',good:true}, 'Parche 2a → epítope':{val:'Sí — epítope conformacional #5 (R83,E84,D86,A90,E93,G94)',good:true}, 'Parche 3a → epítope':{val:'Sí — epítope conformacional #2',good:true} }}
   },
   pf14c: {
+    fasta: 'PF14c.fasta',
+    sequence: 'MAHHHHHHVNKSKELQEKIIRELDVVCAMIEGAQGALERELKRTDLNILERFNYERRIQLIEEDLERSEERLKIATAKLEEASQSAIICSKSGSLWYITVMPCSIGDFKMTESVAILKRRSLSTFEGDNKFIHTEPDDHHEKPTTQCTHEET',
+    length: 152,
     name: 'PF14c',
     selectedModel: 'M5CP',
     postMD: { file: 'pf14cDD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'MolProbity Score': {val:'1.24', good:true}, 'Clash Score': {val:'—', good:true}, 'Ramachandran Favoured': {val:'88.64%', good:true}, 'Ramachandran Outliers': {val:'0', good:true}, 'Z-score (ProSA)': {val:'-3.14', good:true}, 'ERRAT2': {val:'97.88%', good:true}, 'Bad Bonds': {val:'0', good:true} }},
@@ -390,6 +421,9 @@ const modelsData = {
     docking: { id:'Docking', file:'PF14c_IgE_docking1.pdb', label:'Complejo PF14c · IgE', images:['PF14cdocking.png','PF14cdockingback.png','PF14cdockingside.png'], metrics:{ 'ΔG (MM/GBSA)':{val:'-56.33 kcal/mol',good:true}, 'Parches PF14c':{val:'4 (aa 135-141, 99-101, R120, 62-74)'}, 'Parches IgE':{val:'5 (aa 263-266, 232-237, 280-287, 212-217, 404-413)'}, 'Parche 1a → epítope':{val:'Sí, epítope lineal 129-152 (FEGDNKFIHTEPDDHHEKPTTQCTHEET)',good:true}, 'Parche 4a → epítope':{val:'Sí — epítope lineal 62-67 (EEDLER)',good:true}, 'Sin coincidencia':{val:'Parches 2a y 3a'} }}
   },
   blot5: {
+    fasta: 'Blot5.fasta',
+    sequence: 'MKFAIVLIACFAASVLAQEHKPKKDDFRNEFDHLLIEQANHAIEKGEHQLLYLQHQLDELNENKSKELQEKIIRELDVVCAMIEGAQGALERELKRTDLNILERFNYEEAQTLSKILLKDLKETEQKVKDIQTQ',
+    length: 134,
     name: 'Blo t 5',
     selectedModel: 'M3CP',
     postMD: { file: 'BLOT5DD.pdb', label: 'Post-MD (seleccionado)', metrics: { 'Z-score (ProSA)':{val:'-5.1',good:true}, 'MolProbity Score':{val:'1.07',good:true}, 'Clash Score':{val:'0.47',good:true}, 'Ramachandran Fav.':{val:'96.58%',good:true}, 'Ram. Outliers':{val:'0',good:true}, 'Rotamer Outliers':{val:'1'}, 'C-Beta Dev.':{val:'0',good:true}, 'Bad Bonds':{val:'16/1110',good:true}, 'Estructura exp.':{val:'2MEY / 2JMH (NMR)',good:true} }},
@@ -422,6 +456,27 @@ function loadProtein(protKey) {
   renderModelTabs(protKey);
   showMetricsEmpty();
   document.getElementById('viewer-placeholder').style.display = 'flex';
+  // Show sequence
+  const d = modelsData[protKey];
+  if (d.sequence) {
+    document.getElementById('seq-panel').style.display = 'block';
+    document.getElementById('seq-prot-name').textContent = d.name + ' · Secuencia';
+    document.getElementById('seq-length').textContent = d.length + ' aa';
+    // Format sequence in blocks of 10
+    const seq = d.sequence;
+    let formatted = '';
+    for (let i = 0; i < seq.length; i++) {
+      if (i > 0 && i % 60 === 0) formatted += '\n';
+      else if (i > 0 && i % 10 === 0) formatted += ' ';
+      formatted += seq[i];
+    }
+    document.getElementById('seq-box').textContent = formatted;
+    document.getElementById('seq-dl-btn').onclick = () => {
+      const blob = new Blob(['>' + d.name + '\n' + d.sequence], {type:'text/plain'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = d.fasta; a.click();
+    };
+  }
 }
 
 function renderModelTabs(protKey) {
@@ -680,14 +735,17 @@ const filesData = [
   {name:'M4PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M4',ext:'pdb',size:'~2.8 MB'},
   {name:'M5PF14cCP.pdb',protein:'PF14c',type:'Con plantilla M5 ★★',ext:'pdb',size:'~2.8 MB'},
   // Docking IgE
+  {name:'Blot2.fasta',protein:'Blo t 2',type:'Secuencia FASTA',ext:'fasta',size:'~1 KB'},
   {name:'Blot2_IgE_docking1.pdb',protein:'Blo t 2',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
   {name:'Blot2docking.png',protein:'Blo t 2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'Blot2dockingback.png',protein:'Blo t 2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'Blot2dockingside.png',protein:'Blo t 2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  {name:'BP-2.fasta',protein:'BP-2',type:'Secuencia FASTA',ext:'fasta',size:'~1 KB'},
   {name:'BP2_IgE_docking1.pdb',protein:'BP-2',type:'Complejo IgE · Docking',ext:'pdb',size:'~6 MB'},
   {name:'BP2docking.png',protein:'BP-2',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'BP2dockingback.png',protein:'BP-2',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
   {name:'BP2dockingside.png',protein:'BP-2',type:'Vista lateral docking',ext:'png',size:'~1 MB'},
+  {name:'PF14c.fasta',protein:'PF14c',type:'Secuencia FASTA',ext:'fasta',size:'~1 KB'},
   {name:'PF14c_IgE_docking1.pdb',protein:'PF14c',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
   {name:'PF14cdocking.png',protein:'PF14c',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'PF14cdockingback.png',protein:'PF14c',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
@@ -704,6 +762,7 @@ const filesData = [
   {name:'M3BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M3 ★★',ext:'pdb',size:'~2.4 MB'},
   {name:'M4BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M4',ext:'pdb',size:'~2.4 MB'},
   {name:'M5BT5CP.pdb',protein:'Blo t 5',type:'Con plantilla M5',ext:'pdb',size:'~2.4 MB'},
+  {name:'Blot5.fasta',protein:'Blo t 5',type:'Secuencia FASTA',ext:'fasta',size:'~1 KB'},
   {name:'Blot5_IgE_docking1.pdb',protein:'Blo t 5',type:'Complejo IgE · Docking',ext:'pdb',size:'~5 MB'},
   {name:'Blot5docking.png',protein:'Blo t 5',type:'Vista frontal docking',ext:'png',size:'~1 MB'},
   {name:'Blot5dockingback.png',protein:'Blo t 5',type:'Vista posterior docking',ext:'png',size:'~1 MB'},
@@ -725,6 +784,15 @@ function renderFiles() {
 renderEpitopes('all');
 renderFiles();
 loadProtein('blot2');
+
+function copySequence() {
+  const seq = document.getElementById('seq-box').textContent.replace(/\s/g,'');
+  navigator.clipboard.writeText(seq).then(() => {
+    const btn = document.querySelector('.seq-btn');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = '📋 Copiar', 2000);
+  });
+}
 
 // ── LIGHTBOX ──
 let lightboxImages = [];
